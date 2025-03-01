@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { getRandomLetter, getRandomCategories } from '../data/categories';
+import { isValidWord } from '../data/wordDatabase';
 import { GameState, GameContextType, Answer } from '../types/game';
 
 const initialGameState: GameState = {
@@ -45,11 +46,10 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const validateAnswers = (): Answer[] => {
     const { currentLetter, selectedCategories, answers } = gameState;
-    const lowerLetter = currentLetter.toLowerCase();
     
     return selectedCategories.map(category => {
       const word = answers[category.id] || '';
-      const isCorrect = word.toLowerCase().startsWith(lowerLetter) && word.trim() !== '';
+      const isCorrect = isValidWord(word, currentLetter, category.id);
       
       return {
         categoryId: category.id,

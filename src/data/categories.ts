@@ -1,36 +1,32 @@
+import { commonLetters, easyCategories } from './wordDatabase';
+
 export interface Category {
   id: string;
   name: string;
 }
 
-export const categories: Category[] = [
-  { id: 'country', name: 'País' },
-  { id: 'city', name: 'Ciudad' },
-  { id: 'food', name: 'Comida' },
-  { id: 'animal', name: 'Animal' },
-  { id: 'name', name: 'Nombre' },
-  { id: 'fruit', name: 'Fruta o Verdura' },
-  { id: 'profession', name: 'Profesión' },
-  { id: 'object', name: 'Objeto' },
-  { id: 'movie', name: 'Película o Serie' },
-  { id: 'brand', name: 'Marca' },
-  { id: 'color', name: 'Color' },
-  { id: 'household', name: 'Cosa de la casa' },
-  { id: 'instrument', name: 'Instrumento Musical' },
-  { id: 'celebrity', name: 'Personaje Famoso' },
-  { id: 'sport', name: 'Deporte' },
-  { id: 'vehicle', name: 'Vehículo' },
-  { id: 'book', name: 'Libro' },
-  { id: 'drink', name: 'Bebida' },
-  { id: 'game', name: 'Juego o Juguete' },
-  { id: 'bodyPart', name: 'Parte del Cuerpo' },
-];
+// Map the category IDs to display names
+const categoryNameMap: Record<string, string> = {
+  'country': 'País',
+  'city': 'Ciudad',
+  'food': 'Comida',
+  'animal': 'Animal',
+  'name': 'Nombre',
+  'fruit': 'Fruta',
+  'profession': 'Profesión',
+  'object': 'Objeto',
+  'color': 'Color',
+  'sport': 'Deporte'
+};
 
-// Spanish alphabet without rare letters like K, W, X, Y
-export const availableLetters = [
-  'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'L', 
-  'M', 'N', 'Ñ', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'Z'
-];
+// Create the categories array from our easyCategories
+export const categories: Category[] = easyCategories.map(id => ({
+  id,
+  name: categoryNameMap[id] || id
+}));
+
+// Use the common letters from our word database
+export const availableLetters = commonLetters;
 
 export const getRandomLetter = (): string => {
   const randomIndex = Math.floor(Math.random() * availableLetters.length);
