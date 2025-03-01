@@ -1,0 +1,125 @@
+.results-screen {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem;
+}
+
+.results-title {
+  font-size: 2rem;
+  color: var(--primary-color);
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.results-summary {
+  width: 100%;
+  background-color: #f5f5f5;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.results-summary p {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.highlight {
+  font-weight: bold;
+  color: var(--primary-color);
+  font-size: 1.4rem;
+}
+
+.perfect-score {
+  color: var(--correct-color);
+  font-weight: bold;
+  margin-top: 1rem;
+  font-size: 1.3rem;
+}
+
+.results-details {
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
+.results-details h3 {
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.answers-list {
+  list-style: none;
+  width: 100%;
+}
+
+.answer-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid #eee;
+  transition: background-color 0.3s ease;
+}
+
+.answer-item:last-child {
+  border-bottom: none;
+}
+
+.answer-item.correct {
+  background-color: rgba(107, 255, 141, 0.1);
+}
+
+.answer-item.incorrect {
+  background-color: rgba(255, 107, 107, 0.1);
+}
+
+.category-name {
+  font-weight: bold;
+  flex: 1;
+}
+
+.answer-word {
+  flex: 2;
+  text-align: center;
+}
+
+.answer-status {
+  flex: 0.5;
+  text-align: right;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.answer-item.correct .answer-status {
+  color: var(--correct-color);
+}
+
+.answer-item.incorrect .answer-status {
+  color: var(--incorrect-color);
+}
+
+.play-again-button {
+  background-color: var(--primary-color);
+  color: white;
+  font-size: 1.1rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+  width: 100%;
+  max-width: 300px;
+}
+
+.play-again-button:hover {
+  background-color: #ff5252;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.play-again-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+} 
