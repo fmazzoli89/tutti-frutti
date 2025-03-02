@@ -1,0 +1,147 @@
+.fireworks-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.firework {
+  position: absolute;
+  bottom: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #ff5252;
+  box-shadow: 0 0 10px 2px rgba(255, 82, 82, 0.8);
+  animation: shoot 2s ease-out forwards;
+  transform-origin: center bottom;
+}
+
+.firework::before,
+.firework::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: #ff5252;
+  box-shadow: 0 0 10px 2px rgba(255, 82, 82, 0.8);
+  animation: explode 1s ease-out forwards;
+  animation-delay: inherit;
+  opacity: 0;
+}
+
+.firework:nth-child(even) {
+  background-color: #ffeb3b;
+  box-shadow: 0 0 10px 2px rgba(255, 235, 59, 0.8);
+}
+
+.firework:nth-child(even)::before,
+.firework:nth-child(even)::after {
+  background-color: #ffeb3b;
+  box-shadow: 0 0 10px 2px rgba(255, 235, 59, 0.8);
+}
+
+.firework:nth-child(3n) {
+  background-color: #2196f3;
+  box-shadow: 0 0 10px 2px rgba(33, 150, 243, 0.8);
+}
+
+.firework:nth-child(3n)::before,
+.firework:nth-child(3n)::after {
+  background-color: #2196f3;
+  box-shadow: 0 0 10px 2px rgba(33, 150, 243, 0.8);
+}
+
+.firework:nth-child(5n) {
+  background-color: #4caf50;
+  box-shadow: 0 0 10px 2px rgba(76, 175, 80, 0.8);
+}
+
+.firework:nth-child(5n)::before,
+.firework:nth-child(5n)::after {
+  background-color: #4caf50;
+  box-shadow: 0 0 10px 2px rgba(76, 175, 80, 0.8);
+}
+
+@keyframes shoot {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-50vh) scale(0.8);
+    opacity: 1;
+  }
+  60% {
+    transform: translateY(-60vh) scale(0.6);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(-60vh) scale(0.6);
+    opacity: 0;
+  }
+}
+
+@keyframes explode {
+  0% {
+    transform: translate(0, 0) scale(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  50% {
+    transform: translate(var(--x, 30px), var(--y, -30px)) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--x, 60px), var(--y, -60px)) scale(0);
+    opacity: 0;
+  }
+}
+
+/* Create multiple explosion particles with different directions */
+.firework::before {
+  --x: 30px;
+  --y: -30px;
+}
+
+.firework::after {
+  --x: -30px;
+  --y: -30px;
+}
+
+.firework:nth-child(even)::before {
+  --x: 40px;
+  --y: -20px;
+}
+
+.firework:nth-child(even)::after {
+  --x: -40px;
+  --y: -20px;
+}
+
+.firework:nth-child(3n)::before {
+  --x: 20px;
+  --y: -40px;
+}
+
+.firework:nth-child(3n)::after {
+  --x: -20px;
+  --y: -40px;
+}
+
+/* Add a glow effect to the fireworks */
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 5px 2px rgba(255, 255, 255, 0.8);
+  }
+  50% {
+    box-shadow: 0 0 20px 5px rgba(255, 255, 255, 0.8);
+  }
+} 

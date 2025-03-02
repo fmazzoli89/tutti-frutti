@@ -1,11 +1,15 @@
 import React from 'react';
 import { useGame } from '../context/GameContext';
 import { getValidWords } from '../data/wordDatabase';
+import Fireworks from './Fireworks';
 import '../styles/ResultsScreen.css';
 
 const ResultsScreen: React.FC = () => {
   const { gameState, playAgain } = useGame();
   const { currentLetter, validatedAnswers, score, selectedCategories } = gameState;
+
+  // Check if all answers are correct (perfect score)
+  const isPerfectScore = validatedAnswers.every(answer => answer.isCorrect);
 
   // Create a map of category IDs to names for easy lookup
   const categoryMap = selectedCategories.reduce((acc, category) => {
@@ -22,12 +26,14 @@ const ResultsScreen: React.FC = () => {
 
   return (
     <div className="results-screen">
+      {isPerfectScore && <Fireworks duration={6000} />}
+      
       <h2 className="results-title">Resultados</h2>
       
       <div className="results-summary">
         <p>Letra: <span className="highlight">{currentLetter}</span></p>
         <p>Puntuación: <span className="highlight">{score}</span></p>
-        {score === 7 && <p className="perfect-score">¡Puntuación perfecta! ¡Felicidades!</p>}
+        {isPerfectScore && <p className="perfect-score">¡Puntuación perfecta! ¡Felicidades!</p>}
       </div>
       
       <div className="results-details">
