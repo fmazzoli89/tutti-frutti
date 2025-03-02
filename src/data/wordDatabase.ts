@@ -99,11 +99,11 @@ export const isValidWord = (word: string, letter: string, category: string): boo
   // Check if the category exists in our database
   if (!wordDatabase[letter] || !wordDatabase[letter][category]) return false;
   
-  // For simplicity, we'll consider any word starting with the correct letter as valid
-  // In a more advanced version, you could check if the word is in the database
-  // return wordDatabase[letter][category].includes(word);
-  
-  return true;
+  // Check if the word is in our database (case insensitive)
+  const normalizedWord = word.trim().toLowerCase();
+  return wordDatabase[letter][category].some(dbWord => 
+    dbWord.toLowerCase() === normalizedWord
+  );
 };
 
 // Function to get a list of valid words for a given letter and category
