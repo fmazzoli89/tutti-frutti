@@ -1,6 +1,5 @@
 import React from 'react';
 import { useGame } from '../context/GameContext';
-import { getValidWords } from '../data/wordDatabase';
 import Fireworks from './Fireworks';
 import '../styles/ResultsScreen.css';
 
@@ -16,13 +15,6 @@ const ResultsScreen: React.FC = () => {
     acc[category.id] = category.name;
     return acc;
   }, {} as Record<string, string>);
-
-  // Function to get example words for incorrect answers
-  const getExampleWords = (categoryId: string): string[] => {
-    // Get up to 3 valid words for this category and letter
-    const validWords = getValidWords(currentLetter, categoryId);
-    return validWords.slice(0, 3);
-  };
 
   return (
     <div className="results-screen">
@@ -46,18 +38,6 @@ const ResultsScreen: React.FC = () => {
               <span className="answer-status">
                 {answer.isCorrect ? '✓' : '✗'}
               </span>
-              
-              {/* Show example words for incorrect answers */}
-              {!answer.isCorrect && (
-                <div className="example-words">
-                  <p>Ejemplos válidos:</p>
-                  <ul>
-                    {getExampleWords(answer.categoryId).map((word, i) => (
-                      <li key={i}>{word}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
             </li>
           ))}
         </ul>

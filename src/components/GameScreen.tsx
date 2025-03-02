@@ -7,7 +7,7 @@ const GameScreen: React.FC = () => {
   const { currentLetter, selectedCategories, answers, timeLeft } = gameState;
 
   const handleInputChange = (categoryId: string, value: string) => {
-    updateAnswer(categoryId, value);
+    updateAnswer(categoryId, value.toUpperCase());
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -40,6 +40,7 @@ const GameScreen: React.FC = () => {
                 onChange={(e) => handleInputChange(category.id, e.target.value)}
                 placeholder={`${category.name} con ${currentLetter}...`}
                 autoComplete="off"
+                className="uppercase-input"
               />
             </div>
           ))}

@@ -1,5 +1,5 @@
 // Word database for Tutti-Frutti game
-// 5 common letters, 10 categories, 5 words per combination
+// 10 common letters, 10 categories, 5 words per combination
 
 // Define the structure of our word database
 export interface WordDatabase {
@@ -8,8 +8,8 @@ export interface WordDatabase {
   };
 }
 
-// The 5 most common starting letters in Spanish
-export const commonLetters = ['A', 'C', 'E', 'P', 'S'];
+// The 10 most common starting letters in Spanish
+export const commonLetters = ['A', 'B', 'C', 'D', 'E', 'F', 'M', 'P', 'R', 'S'];
 
 // The 10 easiest categories
 export const easyCategories = [
@@ -39,6 +39,18 @@ export const wordDatabase: WordDatabase = {
     'color': ['Azul', 'Amarillo', 'Ámbar', 'Aguamarina', 'Añil'],
     'sport': ['Atletismo', 'Ajedrez', 'Artes marciales', 'Automovilismo', 'Alpinismo']
   },
+  'B': {
+    'country': ['Brasil', 'Bélgica', 'Bulgaria', 'Bahamas', 'Bolivia'],
+    'city': ['Barcelona', 'Berlín', 'Bogotá', 'Boston', 'Bruselas'],
+    'food': ['Burrito', 'Bacalao', 'Batido', 'Bizcocho', 'Brócoli'],
+    'animal': ['Ballena', 'Búho', 'Búfalo', 'Burro', 'Bisonte'],
+    'name': ['Beatriz', 'Bruno', 'Belén', 'Bernardo', 'Blanca'],
+    'fruit': ['Banana', 'Blueberry', 'Boysenberry', 'Breadfruit', 'Bergamota'],
+    'profession': ['Biólogo', 'Bombero', 'Banquero', 'Bibliotecario', 'Barista'],
+    'object': ['Bolígrafo', 'Botella', 'Bolso', 'Balanza', 'Batería'],
+    'color': ['Blanco', 'Beige', 'Borgoña', 'Bronce', 'Bermellón'],
+    'sport': ['Baloncesto', 'Béisbol', 'Balonmano', 'Boxeo', 'Badminton']
+  },
   'C': {
     'country': ['Colombia', 'Canadá', 'Chile', 'China', 'Cuba'],
     'city': ['Caracas', 'Chicago', 'Copenhague', 'Cali', 'Córdoba'],
@@ -50,6 +62,18 @@ export const wordDatabase: WordDatabase = {
     'object': ['Cama', 'Cuchillo', 'Computadora', 'Cepillo', 'Cámara'],
     'color': ['Celeste', 'Café', 'Carmesí', 'Cian', 'Coral'],
     'sport': ['Ciclismo', 'Cricket', 'Clavados', 'Curling', 'Canoa']
+  },
+  'D': {
+    'country': ['Dinamarca', 'Dominica', 'Djibouti', 'Dominicana', 'Dinamarca'],
+    'city': ['Denver', 'Dallas', 'Dublín', 'Detroit', 'Doha'],
+    'food': ['Donut', 'Dátil', 'Durazno', 'Dulce', 'Dorada'],
+    'animal': ['Delfín', 'Dragón', 'Dingo', 'Dromedario', 'Dodo'],
+    'name': ['Daniel', 'Diana', 'David', 'Daniela', 'Diego'],
+    'fruit': ['Durazno', 'Dátil', 'Damasco', 'Durián', 'Drupas'],
+    'profession': ['Doctor', 'Dentista', 'Diseñador', 'Desarrollador', 'Decorador'],
+    'object': ['Disco', 'Destornillador', 'Dado', 'Ducha', 'Diario'],
+    'color': ['Dorado', 'Durazno', 'Damasco', 'Denim', 'Diamante'],
+    'sport': ['Dardos', 'Decatlón', 'Descenso', 'Deportes acuáticos', 'Disco volador']
   },
   'E': {
     'country': ['España', 'Ecuador', 'Egipto', 'Estonia', 'Etiopía'],
@@ -63,6 +87,30 @@ export const wordDatabase: WordDatabase = {
     'color': ['Esmeralda', 'Escarlata', 'Ébano', 'Espliego', 'Encarnado'],
     'sport': ['Esgrima', 'Esquí', 'Escalada', 'Equitación', 'Espeleología']
   },
+  'F': {
+    'country': ['Francia', 'Finlandia', 'Filipinas', 'Fiji', 'Federación Rusa'],
+    'city': ['Florencia', 'Frankfurt', 'Filadelfia', 'Fukuoka', 'Fortaleza'],
+    'food': ['Frijoles', 'Flan', 'Focaccia', 'Frutos secos', 'Fideos'],
+    'animal': ['Foca', 'Flamenco', 'Faisán', 'Fénec', 'Frailecillo'],
+    'name': ['Fernando', 'Francisca', 'Felipe', 'Fabiola', 'Federico'],
+    'fruit': ['Fresa', 'Frambuesa', 'Feijoa', 'Fruta del dragón', 'Fruta de la pasión'],
+    'profession': ['Farmacéutico', 'Fotógrafo', 'Físico', 'Fontanero', 'Filósofo'],
+    'object': ['Foco', 'Frasco', 'Florero', 'Flauta', 'Fotografía'],
+    'color': ['Fucsia', 'Frambuesa', 'Fresa', 'Fuego', 'Floral'],
+    'sport': ['Fútbol', 'Frontón', 'Fútbol americano', 'Fitness', 'Fórmula 1']
+  },
+  'M': {
+    'country': ['México', 'Marruecos', 'Mónaco', 'Madagascar', 'Malasia'],
+    'city': ['Madrid', 'Miami', 'Melbourne', 'Montreal', 'Moscú'],
+    'food': ['Manzana', 'Maíz', 'Miel', 'Mantequilla', 'Merluza'],
+    'animal': ['Mono', 'Murciélago', 'Mapache', 'Mariposa', 'Morsa'],
+    'name': ['María', 'Miguel', 'Marta', 'Manuel', 'Mónica'],
+    'fruit': ['Mango', 'Melón', 'Mandarina', 'Mora', 'Membrillo'],
+    'profession': ['Médico', 'Maestro', 'Mecánico', 'Músico', 'Marinero'],
+    'object': ['Mesa', 'Martillo', 'Moneda', 'Mochila', 'Micrófono'],
+    'color': ['Marrón', 'Magenta', 'Malva', 'Mostaza', 'Menta'],
+    'sport': ['Maratón', 'Motociclismo', 'Montañismo', 'Marcha', 'Monopatín']
+  },
   'P': {
     'country': ['Perú', 'Portugal', 'Polonia', 'Paraguay', 'Panamá'],
     'city': ['París', 'Praga', 'Pekín', 'Porto', 'Palermo'],
@@ -74,6 +122,18 @@ export const wordDatabase: WordDatabase = {
     'object': ['Plato', 'Puerta', 'Papel', 'Peine', 'Paraguas'],
     'color': ['Púrpura', 'Plateado', 'Pardo', 'Pastel', 'Púrpura'],
     'sport': ['Patinaje', 'Pádel', 'Polo', 'Paracaidismo', 'Pentatlón']
+  },
+  'R': {
+    'country': ['Rusia', 'Rumania', 'República Checa', 'Ruanda', 'Reino Unido'],
+    'city': ['Roma', 'Río de Janeiro', 'Rotterdam', 'Rabat', 'Riga'],
+    'food': ['Risotto', 'Ramen', 'Ravioli', 'Remolacha', 'Rosquilla'],
+    'animal': ['Ratón', 'Rinoceronte', 'Rana', 'Reno', 'Ruiseñor'],
+    'name': ['Roberto', 'Rosa', 'Raúl', 'Raquel', 'Ricardo'],
+    'fruit': ['Rambután', 'Ruibarbo', 'Rocoto', 'Rowan', 'Remolacha'],
+    'profession': ['Recepcionista', 'Relojero', 'Radiólogo', 'Repartidor', 'Repostero'],
+    'object': ['Radio', 'Reloj', 'Regla', 'Refrigerador', 'Rueda'],
+    'color': ['Rojo', 'Rosa', 'Rubí', 'Rojizo', 'Rosado'],
+    'sport': ['Rugby', 'Remo', 'Rally', 'Racquetball', 'Rafting']
   },
   'S': {
     'country': ['Suiza', 'Suecia', 'Singapur', 'Senegal', 'Serbia'],
@@ -93,17 +153,25 @@ export const wordDatabase: WordDatabase = {
 export const isValidWord = (word: string, letter: string, category: string): boolean => {
   if (!word || word.trim() === '') return false;
   
+  // Normalize the word to remove accents and convert to uppercase
+  const normalizedWord = normalizeString(word);
+  const normalizedLetter = normalizeString(letter);
+  
   // Check if the word starts with the given letter (case insensitive)
-  if (!word.toUpperCase().startsWith(letter.toUpperCase())) return false;
+  if (!normalizedWord.startsWith(normalizedLetter)) return false;
   
   // Check if the category exists in our database
   if (!wordDatabase[letter] || !wordDatabase[letter][category]) return false;
   
-  // Check if the word is in our database (case insensitive)
-  const normalizedWord = word.trim().toLowerCase();
+  // Check if the word is in our database (case insensitive, ignoring accents)
   return wordDatabase[letter][category].some(dbWord => 
-    dbWord.toLowerCase() === normalizedWord
+    normalizeString(dbWord) === normalizedWord
   );
+};
+
+// Function to normalize strings (remove accents and convert to uppercase)
+export const normalizeString = (str: string): string => {
+  return str.trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
 };
 
 // Function to get a list of valid words for a given letter and category

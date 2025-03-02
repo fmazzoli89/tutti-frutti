@@ -40,6 +40,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .categories-container {
@@ -48,18 +50,33 @@
   flex-direction: column;
   gap: 1rem;
   margin-bottom: 1.5rem;
+  align-items: center;
 }
 
 .category-input {
   display: flex;
   flex-direction: column;
-  width: 100%;
+  width: 80%;
+  text-align: center;
 }
 
 .category-input label {
   margin-bottom: 0.5rem;
   font-weight: bold;
   color: var(--text-color);
+}
+
+.category-input input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  text-align: center;
+}
+
+.uppercase-input {
+  text-transform: uppercase;
 }
 
 .submit-button {
@@ -70,7 +87,7 @@
   border-radius: 4px;
   transition: all 0.3s ease;
   margin-top: 1rem;
-  width: 100%;
+  width: 80%;
   max-width: 100%;
 }
 
