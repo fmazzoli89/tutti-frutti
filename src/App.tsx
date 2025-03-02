@@ -1,5 +1,6 @@
 import { GameProvider } from './context/GameContext';
 import Game from './components/Game';
+import VersionInfo from './components/VersionInfo';
 import './styles/index.css';
 
 function App() {
@@ -8,6 +9,7 @@ function App() {
       <GameProvider>
         <Game />
       </GameProvider>
+      <VersionInfo />
     </div>
   );
 }
