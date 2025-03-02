@@ -58,10 +58,10 @@
 .category-input {
   display: flex;
   flex-direction: column;
-  width: 100%;
-  max-width: 80%;
+  width: 80%;
   align-items: center;
   text-align: center;
+  margin: 0 auto;
 }
 
 .category-input label {
@@ -79,6 +79,7 @@
   border-radius: 4px;
   font-size: 1rem;
   text-align: center;
+  box-sizing: border-box;
 }
 
 .uppercase-input {
@@ -94,7 +95,7 @@
   transition: all 0.3s ease;
   margin-top: 1rem;
   width: 80%;
-  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .submit-button:hover {
