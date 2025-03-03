@@ -11,9 +11,10 @@ const memoryStorage: Record<string, string> = {};
 // Check if we're in a browser environment and have localStorage access
 const hasLocalStorage = (): boolean => {
   try {
-    return typeof window !== 'undefined' && 
-           window.localStorage !== undefined && 
-           window.localStorage !== null;
+    // Try to actually use localStorage to verify access
+    localStorage.setItem('test', 'test');
+    localStorage.removeItem('test');
+    return true;
   } catch {
     return false;
   }
@@ -46,14 +47,34 @@ const safeStorage = {
 
 // Get API usage stats from storage
 export function getApiUsageStats(): APIUsageStats {
-  const storedStats = safeStorage.getItem(API_USAGE_KEY);
-  const newStats = storedStats ? JSON.parse(storedStats) : { count: 0, lastReset: new Date().toISOString() };
-  return newStats;
+  try {
+    if (hasLocalStorage()) {
+      const storedStats = localStorage.getItem(API_USAGE_KEY);
+      if (storedStats) {
+        return JSON.parse(storedStats);
+      }
+    }
+  } catch {
+    // Ignore storage errors
+  }
+  // Return default stats if storage fails
+  return { 
+    requestCount: 0,
+    totalTokens: 0,
+    timestamp: new Date().toISOString()
+  };
 }
 
 // Update API usage stats
 export function updateApiUsageStats(stats: APIUsageStats): void {
-  safeStorage.setItem(API_USAGE_KEY, JSON.stringify(stats));
+  try {
+    if (hasLocalStorage()) {
+      localStorage.setItem(API_USAGE_KEY, JSON.stringify(stats));
+    }
+  } catch {
+    // Ignore storage errors
+    console.warn('Failed to update API usage stats');
+  }
 }
 
 // Check if API key is available
@@ -90,7 +111,19 @@ const makeOpenAIRequest = async (messages: any[], model: string = 'gpt-3.5-turbo
     
     // Update API usage stats
     if (data.usage) {
-      updateApiUsageStats(data.usage);
+      const stats: APIUsageStats = {
+        requestCount: 1,
+        totalTokens: data.usage.total_tokens || 0,
+        timestamp: new Date().toISOString()
+      };
+      try {
+        const existingStats = getApiUsageStats();
+        stats.requestCount += existingStats.requestCount;
+        stats.totalTokens += existingStats.totalTokens;
+      } catch {
+        // Ignore errors reading existing stats
+      }
+      updateApiUsageStats(stats);
     }
     
     return data;
