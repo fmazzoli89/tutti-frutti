@@ -1,11 +1,14 @@
 import { Category } from '../data/categories';
 
-export type GameStatus = 'idle' | 'playing' | 'results';
+export type GameStatus = 'idle' | 'playing' | 'results' | 'validating' | 'generating-story';
+
+export type ValidationEngine = 'offline' | 'ai';
 
 export interface Answer {
   categoryId: string;
   word: string;
   isCorrect?: boolean;
+  explanation?: string;
 }
 
 export interface GameState {
@@ -16,6 +19,8 @@ export interface GameState {
   timeLeft: number;
   score: number;
   validatedAnswers: Answer[];
+  validationEngine: ValidationEngine;
+  story?: string;
 }
 
 export interface GameContextType {
@@ -24,4 +29,6 @@ export interface GameContextType {
   submitAnswers: () => void;
   updateAnswer: (categoryId: string, word: string) => void;
   playAgain: () => void;
+  setValidationEngine: (engine: ValidationEngine) => void;
+  generateStory: () => Promise<void>;
 } 
