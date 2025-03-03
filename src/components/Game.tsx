@@ -8,7 +8,7 @@ import '../styles/Game.css';
 
 const Game: React.FC = () => {
   const { gameState, startGame } = useGame();
-  const { status, timeLeft } = gameState;
+  const { status, timeLeft, currentLetter } = gameState;
 
   return (
     <div className="game-container">
@@ -27,7 +27,12 @@ const Game: React.FC = () => {
       )}
       {status === 'playing' && (
         <>
-          <Timer timeLeft={timeLeft} />
+          <div className="sticky-header">
+            <div className="current-letter">
+              Letra: <span className="letter">{currentLetter}</span>
+            </div>
+            <Timer timeLeft={timeLeft} />
+          </div>
           <GameScreen />
         </>
       )}
