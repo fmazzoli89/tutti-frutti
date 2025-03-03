@@ -5,34 +5,48 @@ const API_URL = 'https://api.openai.com/v1/chat/completions';
 const API_USAGE_KEY = 'tutti_frutti_api_usage';
 const OPENAI_API_KEY = import.meta.env.VITE_OPENAI_API_KEY;
 
-const safeLocalStorage = {
+// Memory fallback when localStorage is not available
+const memoryStorage: Record<string, string> = {};
+
+const safeStorage = {
   getItem: (key: string): string | null => {
     try {
-      return localStorage.getItem(key);
+      // Try localStorage first
+      if (typeof window !== 'undefined' && window.localStorage) {
+        return localStorage.getItem(key);
+      }
     } catch (error) {
-      console.warn('Failed to read from localStorage:', error);
-      return null;
+      console.warn('localStorage not available, using memory storage');
     }
+    // Fallback to memory storage
+    return memoryStorage[key] || null;
   },
+  
   setItem: (key: string, value: string): void => {
     try {
-      localStorage.setItem(key, value);
+      // Try localStorage first
+      if (typeof window !== 'undefined' && window.localStorage) {
+        localStorage.setItem(key, value);
+        return;
+      }
     } catch (error) {
-      console.warn('Failed to write to localStorage:', error);
+      console.warn('localStorage not available, using memory storage');
     }
+    // Fallback to memory storage
+    memoryStorage[key] = value;
   }
 };
 
-// Get API usage stats from localStorage
+// Get API usage stats from storage
 export function getApiUsageStats(): APIUsageStats {
-  const storedStats = safeLocalStorage.getItem(API_USAGE_KEY);
+  const storedStats = safeStorage.getItem(API_USAGE_KEY);
   const newStats = storedStats ? JSON.parse(storedStats) : { count: 0, lastReset: new Date().toISOString() };
   return newStats;
 }
 
 // Update API usage stats
 export function updateApiUsageStats(stats: APIUsageStats): void {
-  safeLocalStorage.setItem(API_USAGE_KEY, JSON.stringify(stats));
+  safeStorage.setItem(API_USAGE_KEY, JSON.stringify(stats));
 }
 
 // Check if API key is available
