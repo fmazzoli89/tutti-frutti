@@ -73,7 +73,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const correctWords = validatedAnswers.filter(answer => answer.isCorrect).length;
     const correctWordsPoints = correctWords * 10;
     const bonusPoints = correctWords === 5 ? 20 : 0;
-    const timePoints = gameState.timeLeft;
+    const timePoints = Math.round(gameState.timeLeft/10*correctWords);
     
     return {
       total: correctWordsPoints + bonusPoints + timePoints,
