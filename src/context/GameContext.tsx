@@ -95,13 +95,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           isCorrect: result.isCorrect,
           example: result.example
         }));
-        
-        setGameState(prev => ({
-          ...prev,
-          status: 'results',
-          validatedAnswers,
-          score
-        }));
       } catch (error) {
         console.error('Error validating with AI, falling back to offline:', error);
         validatedAnswers = validateAnswersOffline();
