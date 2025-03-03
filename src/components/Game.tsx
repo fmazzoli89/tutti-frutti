@@ -33,9 +33,9 @@ const Game: React.FC = () => {
                 Letra: {currentLetter}
               </div>
               <div className="timer-container">
-                <span className="timer-label">TIEMPO:</span>
+                {/* <span className="timer-label">TIEMPO:</span> */}
                 <Timer timeLeft={timeLeft} />
-                <span className="timer-unit">S</span>
+                {/* <span className="timer-unit">S</span> */}
               </div>
             </div>
           </div>
