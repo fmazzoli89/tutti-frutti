@@ -4,7 +4,7 @@ import react from '@vitejs/plugin-react'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: '/tutti-frutti/', // Base path for GitHub Pages
+  base: './', // Changed from '/tutti-frutti/' to './' for relative paths
   publicDir: 'public',
   build: {
     outDir: 'dist',

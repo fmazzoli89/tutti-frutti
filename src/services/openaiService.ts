@@ -5,6 +5,24 @@ const API_URL = 'https://api.openai.com/v1/chat/completions';
 const API_USAGE_KEY = 'tutti_frutti_api_usage';
 const API_KEY_KEY = 'tutti_frutti_api_key';
 
+const safeLocalStorage = {
+  getItem: (key: string): string | null => {
+    try {
+      return localStorage.getItem(key);
+    } catch (error) {
+      console.warn('Failed to read from localStorage:', error);
+      return null;
+    }
+  },
+  setItem: (key: string, value: string): void => {
+    try {
+      localStorage.setItem(key, value);
+    } catch (error) {
+      console.warn('Failed to write to localStorage:', error);
+    }
+  }
+};
+
 // Initialize API usage stats
 const initializeAPIUsageStats = (): APIUsageStats => {
   return {
@@ -15,34 +33,26 @@ const initializeAPIUsageStats = (): APIUsageStats => {
 };
 
 // Get API usage stats from localStorage
-export const getAPIUsageStats = (): APIUsageStats => {
-  const storedStats = localStorage.getItem(API_USAGE_KEY);
-  if (storedStats) {
-    return JSON.parse(storedStats);
-  }
-  const newStats = initializeAPIUsageStats();
-  localStorage.setItem(API_USAGE_KEY, JSON.stringify(newStats));
+export function getApiUsageStats(): APIUsageStats {
+  const storedStats = safeLocalStorage.getItem(API_USAGE_KEY);
+  const newStats = storedStats ? JSON.parse(storedStats) : { count: 0, lastReset: new Date().toISOString() };
   return newStats;
-};
+}
 
 // Update API usage stats
-const updateAPIUsageStats = (tokens: number): void => {
-  const stats = getAPIUsageStats();
-  stats.requestCount += 1;
-  stats.totalTokens += tokens;
-  stats.timestamp = new Date().toISOString();
-  localStorage.setItem(API_USAGE_KEY, JSON.stringify(stats));
-};
+export function updateApiUsageStats(stats: APIUsageStats): void {
+  safeLocalStorage.setItem(API_USAGE_KEY, JSON.stringify(stats));
+}
 
 // Get API key from localStorage
-export const getApiKey = (): string => {
-  return localStorage.getItem(API_KEY_KEY) || '';
-};
+export function getApiKey(): string {
+  return safeLocalStorage.getItem(API_KEY_KEY) || '';
+}
 
 // Set API key in localStorage
-export const setApiKey = (key: string): void => {
-  localStorage.setItem(API_KEY_KEY, key);
-};
+export function setApiKey(key: string): void {
+  safeLocalStorage.setItem(API_KEY_KEY, key);
+}
 
 // Check if API key is set
 const isApiKeySet = (): boolean => {
@@ -81,7 +91,7 @@ const makeOpenAIRequest = async (messages: any[], model: string = 'gpt-3.5-turbo
     
     // Update API usage stats
     if (data.usage) {
-      updateAPIUsageStats(data.usage.total_tokens);
+      updateApiUsageStats(data.usage);
     }
     
     return data;
