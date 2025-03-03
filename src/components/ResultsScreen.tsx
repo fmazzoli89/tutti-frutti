@@ -7,7 +7,7 @@ import { GameStatus } from '../types/game';
 
 const ResultsScreen: React.FC = () => {
   const { gameState, playAgain, generateStory } = useGame();
-  const { currentLetter, validatedAnswers, score, selectedCategories, status, story } = gameState;
+  const { currentLetter, validatedAnswers, score, selectedCategories, status, story, scoreBreakdown } = gameState;
 
   // Check if all answers are correct for a perfect score
   const allCorrect = validatedAnswers.every(answer => answer.isCorrect);
@@ -39,9 +39,20 @@ const ResultsScreen: React.FC = () => {
       
       <div className="results-summary">
         <p>
-          Letra: <span className="highlight">{currentLetter.toUpperCase()}</span> | 
-          Puntuación: <span className="highlight">{score}</span>
+          Letra: <span className="highlight">{currentLetter.toUpperCase()}</span>
         </p>
+        {scoreBreakdown && (
+          <div className="score-breakdown">
+            <h3>Puntuación Total: <span className="highlight">{score}</span></h3>
+            <div className="score-details">
+              <p>Palabras correctas: {scoreBreakdown.correctWords} × 10 = {scoreBreakdown.correctWordsPoints} puntos</p>
+              {scoreBreakdown.allWordsBonus > 0 && (
+                <p>¡Bonus por todas correctas! = {scoreBreakdown.allWordsBonus} puntos</p>
+              )}
+              <p>Tiempo restante: {scoreBreakdown.timeBonus} segundos = {scoreBreakdown.timeBonus} puntos</p>
+            </div>
+          </div>
+        )}
         {allCorrect && (
           <p className="perfect-score">¡Perfecto! ¡Todas las respuestas son correctas!</p>
         )}

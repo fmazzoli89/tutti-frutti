@@ -4,6 +4,14 @@ export type GameStatus = 'idle' | 'playing' | 'results' | 'validating' | 'genera
 
 export type ValidationEngine = 'offline' | 'ai';
 
+export interface ScoreBreakdown {
+  correctWords: number;
+  correctWordsPoints: number;
+  allWordsBonus: number;
+  timeBonus: number;
+  totalScore: number;
+}
+
 export interface Answer {
   categoryId: string;
   word: string;
@@ -18,6 +26,7 @@ export interface GameState {
   answers: Record<string, string>;
   timeLeft: number;
   score: number;
+  scoreBreakdown?: ScoreBreakdown;
   validatedAnswers: Answer[];
   validationEngine: ValidationEngine;
   story?: string;
