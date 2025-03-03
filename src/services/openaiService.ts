@@ -62,7 +62,7 @@ const isApiKeyAvailable = (): boolean => {
 };
 
 // Make a request to the OpenAI API
-const makeOpenAIRequest = async (messages: any[], model: string = 'gpt-3.5-turbo') => {
+const makeOpenAIRequest = async (messages: any[], model: string = 'gpt-4o-mini-2024-07-18') => {
   if (!isApiKeyAvailable()) {
     throw new Error('OpenAI API key not configured');
   }
@@ -139,12 +139,45 @@ export const validateWordWithAI = async (
   }
 };
 
+// Generate an example for an incorrect word
+export const generateExample = async (
+  letter: string,
+  categoryId: string
+): Promise<string> => {
+  if (!isApiKeyAvailable()) {
+    throw new Error('OpenAI API key not configured');
+  }
+  
+  const messages = [
+    {
+      role: 'system',
+      content: `You are a helpful assistant for a word game called "Tutti Frutti" or "Stop".
+      You need to provide one valid example word for a given category that starts with a specific letter.
+      The word must be a valid Spanish word and commonly used in Spanish-speaking countries.
+      Respond with just the word, nothing else.`
+    },
+    {
+      role: 'user',
+      content: `Give me one valid Spanish word for the category "${categoryId}" that starts with the letter "${letter}".
+      Respond with just the word in lowercase, nothing else.`
+    }
+  ];
+
+  try {
+    const response = await makeOpenAIRequest(messages);
+    return response.choices[0].message.content.trim().toLowerCase();
+  } catch (error) {
+    console.error('Error generating example:', error);
+    return 'No se pudo generar un ejemplo.';
+  }
+};
+
 // Validate multiple answers with OpenAI
 export const validateAnswersWithAI = async (
   answers: Record<string, string>,
   letter: string,
   categories: Category[]
-): Promise<{ categoryId: string; word: string; isCorrect: boolean }[]> => {
+): Promise<{ categoryId: string; word: string; isCorrect: boolean; example?: string }[]> => {
   if (!isApiKeyAvailable()) {
     throw new Error('OpenAI API key not configured');
   }
@@ -170,12 +203,16 @@ export const validateAnswersWithAI = async (
     {
       role: 'system',
       content: `You are a helpful assistant that validates words for a word game called "Tutti Frutti" or "Stop".
-      You need to check if each word starts with a specific letter and belongs to its specific category.
+      You need to check if each word:
+      1. Starts with the specific letter
+      2. Is a valid Spanish word commonly used in Spanish-speaking countries
+      3. Belongs to its specific category
+      4. Is written correctly (proper Spanish spelling)
       Respond with a JSON array where each item has "categoryId" and "isCorrect" properties.`
     },
     {
       role: 'user',
-      content: `Validate the following words that should start with the letter "${letter}":
+      content: `Validate the following Spanish words that should start with the letter "${letter}":
       ${answersToValidate.map(a => `- Word: "${a.word}" for category "${a.categoryName}" (ID: ${a.categoryId})`).join('\n')}
       
       Respond with a JSON array in this format:
@@ -198,32 +235,47 @@ export const validateAnswersWithAI = async (
     
     const validationResults = JSON.parse(jsonMatch[0]);
     
-    // Map the results back to the full answer set
-    return categories.map(category => {
-      const word = answers[category.id] || '';
-      
-      if (word.trim() === '') {
+    // Get examples for incorrect answers
+    const resultsWithExamples = await Promise.all(
+      categories.map(async category => {
+        const word = answers[category.id] || '';
+        
+        if (word.trim() === '') {
+          return {
+            categoryId: category.id,
+            word,
+            isCorrect: false
+          };
+        }
+        
+        const result = validationResults.find((r: any) => r.categoryId === category.id);
+        const isCorrect = result ? result.isCorrect : false;
+        
+        if (!isCorrect) {
+          const example = await generateExample(letter, category.id);
+          return {
+            categoryId: category.id,
+            word,
+            isCorrect,
+            example
+          };
+        }
+        
         return {
           categoryId: category.id,
           word,
-          isCorrect: false
+          isCorrect
         };
-      }
-      
-      const result = validationResults.find((r: any) => r.categoryId === category.id);
-      return {
-        categoryId: category.id,
-        word,
-        isCorrect: result ? result.isCorrect : false
-      };
-    });
+      })
+    );
+    
+    return resultsWithExamples;
   } catch (error) {
-    console.error('Error validating answers with AI:', error);
-    // Fallback to simple validation
+    console.error('Error validating with AI, falling back to offline:', error);
     return categories.map(category => {
       const word = answers[category.id] || '';
       const isCorrect = word.toLowerCase().startsWith(letter.toLowerCase()) && 
-                        word.trim() !== '';
+                      word.trim() !== '';
       return {
         categoryId: category.id,
         word,

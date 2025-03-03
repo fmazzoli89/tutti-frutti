@@ -16,7 +16,7 @@ export interface Answer {
   categoryId: string;
   word: string;
   isCorrect?: boolean;
-  explanation?: string;
+  example?: string;
 }
 
 export interface GameState {

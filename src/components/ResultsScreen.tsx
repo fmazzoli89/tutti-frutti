@@ -38,18 +38,27 @@ const ResultsScreen: React.FC = () => {
       <h2 className="results-title">Resultados</h2>
       
       <div className="results-summary">
-        <p>
+        <p className="current-letter">
           Letra: <span className="highlight">{currentLetter.toUpperCase()}</span>
         </p>
         {scoreBreakdown && (
           <div className="score-breakdown">
             <h3>Puntuación Total: <span className="highlight">{score}</span></h3>
             <div className="score-details">
-              <p>Palabras correctas: {scoreBreakdown.correctWords} × 10 = {scoreBreakdown.correctWordsPoints} puntos</p>
+              <div className="score-item">
+                <span>Palabras correctas:</span>
+                <span>{scoreBreakdown.correctWords} × 10 = {scoreBreakdown.correctWordsPoints} puntos</span>
+              </div>
               {scoreBreakdown.allWordsBonus > 0 && (
-                <p>¡Bonus por todas correctas! = {scoreBreakdown.allWordsBonus} puntos</p>
+                <div className="score-item bonus">
+                  <span>¡Bonus por todas correctas!</span>
+                  <span>{scoreBreakdown.allWordsBonus} puntos</span>
+                </div>
               )}
-              <p>Tiempo restante: {scoreBreakdown.timeBonus} segundos = {scoreBreakdown.timeBonus} puntos</p>
+              <div className="score-item">
+                <span>Tiempo restante:</span>
+                <span>{scoreBreakdown.timeBonus} segundos = {scoreBreakdown.timeBonus} puntos</span>
+              </div>
             </div>
           </div>
         )}
@@ -74,9 +83,9 @@ const ResultsScreen: React.FC = () => {
               </span>
             </div>
             
-            {!answer.isCorrect && answer.explanation && (
-              <div className="answer-explanation">
-                {answer.explanation}
+            {!answer.isCorrect && answer.example && (
+              <div className="answer-example">
+                Ejemplo: <span className="example-word">{answer.example}</span>
               </div>
             )}
           </div>
