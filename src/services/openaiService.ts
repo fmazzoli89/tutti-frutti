@@ -48,11 +48,9 @@ const safeStorage = {
 // Get API usage stats from storage
 export function getApiUsageStats(): APIUsageStats {
   try {
-    if (hasLocalStorage()) {
-      const storedStats = localStorage.getItem(API_USAGE_KEY);
-      if (storedStats) {
-        return JSON.parse(storedStats);
-      }
+    const storedStats = safeStorage.getItem(API_USAGE_KEY);
+    if (storedStats) {
+      return JSON.parse(storedStats);
     }
   } catch {
     // Ignore storage errors
@@ -68,9 +66,7 @@ export function getApiUsageStats(): APIUsageStats {
 // Update API usage stats
 export function updateApiUsageStats(stats: APIUsageStats): void {
   try {
-    if (hasLocalStorage()) {
-      localStorage.setItem(API_USAGE_KEY, JSON.stringify(stats));
-    }
+    safeStorage.setItem(API_USAGE_KEY, JSON.stringify(stats));
   } catch {
     // Ignore storage errors
     console.warn('Failed to update API usage stats');
