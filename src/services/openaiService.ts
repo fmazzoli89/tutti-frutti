@@ -62,7 +62,7 @@ const isApiKeyAvailable = (): boolean => {
 };
 
 // Make a request to the OpenAI API
-const makeOpenAIRequest = async (messages: any[], model: string = 'gpt-4o-mini-2024-07-18') => {
+const makeOpenAIRequest = async (messages: any[], model: string = 'gpt-3.5-turbo') => {
   if (!isApiKeyAvailable()) {
     throw new Error('OpenAI API key not configured');
   }
@@ -200,12 +200,17 @@ export const validateAnswersWithAI = async (
   }).filter(item => item.word.trim() !== '');
 
   if (answersToValidate.length === 0) {
-    return categories.map(category => ({
-      categoryId: category.id,
-      word: answers[category.id] || '',
-      isCorrect: false,
-      example: ''
+    // Generate examples for all categories since all answers are empty
+    const results = await Promise.all(categories.map(async category => {
+      const example = await generateExample(letter, category.id);
+      return {
+        categoryId: category.id,
+        word: answers[category.id] || '',
+        isCorrect: false,
+        example
+      };
     }));
+    return results;
   }
 
   const messages = [
