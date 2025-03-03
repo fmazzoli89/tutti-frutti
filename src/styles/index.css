@@ -46,7 +46,7 @@ body {
 @media (min-width: 768px) {
   .app {
     max-width: 800px;
-    padding: 2rem;
+    padding: 1rem;
   }
 }
 

@@ -39,7 +39,11 @@ const ResultsScreen: React.FC = () => {
       
       <div className="results-container">
         <div className="score-section">
+          <h2>Letra: {currentLetter.toUpperCase()}</h2>
           <h2>Puntaje Total: {scoreDetails?.total || 0}</h2>
+          {allCorrect && (
+              <p className="perfect-score">¡Perfecto! ¡Todas las respuestas son correctas!</p>
+            )}
           <div className="score-details">
             <div className="score-item">
               <span>Palabras correctas:</span>
@@ -59,15 +63,6 @@ const ResultsScreen: React.FC = () => {
         </div>
 
         <div className="answers-section">
-          <div className="results-summary">
-            <p className="current-letter">
-              Letra: <span className="highlight">{currentLetter.toUpperCase()}</span>
-            </p>
-            {allCorrect && (
-              <p className="perfect-score">¡Perfecto! ¡Todas las respuestas son correctas!</p>
-            )}
-          </div>
-          
           <div className="results-details">
             {validatedAnswers.map((answer) => (
               <div 

@@ -23,10 +23,7 @@ const GameScreen: React.FC = () => {
 
   return (
     <div className="game-screen">
-      <div className="game-header">
-        <div className="timer">Tiempo: {formatTime(timeLeft)}</div>
-        <div className="current-letter">Letra: <span>{currentLetter}</span></div>
-      </div>
+      
 
       <form onSubmit={handleSubmit} className="game-form">
         <div className="categories-container">

@@ -15,9 +15,7 @@ const Timer: React.FC<TimerProps> = ({ timeLeft }) => {
   return (
     <div className={`timer-container ${getTimerColor()}`}>
       <div className="timer-content">
-        <span className="timer-label">Tiempo:</span>
         <span className="timer-value">{timeLeft}</span>
-        <span className="timer-unit">segundos</span>
       </div>
     </div>
   );

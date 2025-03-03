@@ -28,12 +28,20 @@ const Game: React.FC = () => {
       {status === 'playing' && (
         <>
           <div className="sticky-header">
-            <div className="current-letter">
-              Letra: <span className="letter">{currentLetter}</span>
+            <div className="header-content">
+              <div className="current-letter">
+                Letra: {currentLetter}
+              </div>
+              <div className="timer-container">
+                <span className="timer-label">TIEMPO:</span>
+                <Timer timeLeft={timeLeft} />
+                <span className="timer-unit">S</span>
+              </div>
             </div>
-            <Timer timeLeft={timeLeft} />
           </div>
-          <GameScreen />
+          <div className="game-content">
+            <GameScreen />
+          </div>
         </>
       )}
       {status === 'validating' && (
