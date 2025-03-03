@@ -7,7 +7,7 @@ import { GameStatus } from '../types/game';
 
 const ResultsScreen: React.FC = () => {
   const { gameState, playAgain, generateStory } = useGame();
-  const { currentLetter, validatedAnswers, score, selectedCategories, status, story, scoreBreakdown } = gameState;
+  const { currentLetter, validatedAnswers, selectedCategories, status, story, scoreDetails } = gameState;
 
   // Check if all answers are correct for a perfect score
   const allCorrect = validatedAnswers.every(answer => answer.isCorrect);
@@ -39,16 +39,23 @@ const ResultsScreen: React.FC = () => {
       
       <div className="results-container">
         <div className="score-section">
-          <h2>Puntaje Total: {gameState.score}</h2>
-          {gameState.scoreDetails && (
-            <div className="score-breakdown">
-              <p>Palabras correctas: {gameState.scoreDetails.correctWordsPoints} puntos</p>
-              {gameState.scoreDetails.bonusPoints > 0 && (
-                <p>¡Bonus por todas correctas! +{gameState.scoreDetails.bonusPoints} puntos</p>
-              )}
-              <p>Tiempo restante: +{gameState.scoreDetails.timePoints} puntos</p>
+          <h2>Puntaje Total: {scoreDetails?.total || 0}</h2>
+          <div className="score-details">
+            <div className="score-item">
+              <span>Palabras correctas:</span>
+              <span>{validatedAnswers.filter(a => a.isCorrect).length} × 10 = {scoreDetails?.correctWordsPoints || 0} puntos</span>
             </div>
-          )}
+            {scoreDetails && scoreDetails.bonusPoints > 0 && (
+              <div className="score-item bonus">
+                <span>¡Bonus por todas correctas!</span>
+                <span>+{scoreDetails.bonusPoints} puntos</span>
+              </div>
+            )}
+            <div className="score-item">
+              <span>Tiempo restante:</span>
+              <span>+{scoreDetails?.timePoints || 0} puntos</span>
+            </div>
+          </div>
         </div>
 
         <div className="answers-section">
@@ -56,27 +63,6 @@ const ResultsScreen: React.FC = () => {
             <p className="current-letter">
               Letra: <span className="highlight">{currentLetter.toUpperCase()}</span>
             </p>
-            {scoreBreakdown && (
-              <div className="score-breakdown">
-                <h3>Puntuación Total: <span className="highlight">{score}</span></h3>
-                <div className="score-details">
-                  <div className="score-item">
-                    <span>Palabras correctas:</span>
-                    <span>{scoreBreakdown.correctWords} × 10 = {scoreBreakdown.correctWordsPoints} puntos</span>
-                  </div>
-                  {scoreBreakdown.allWordsBonus > 0 && (
-                    <div className="score-item bonus">
-                      <span>¡Bonus por todas correctas!</span>
-                      <span>{scoreBreakdown.allWordsBonus} puntos</span>
-                    </div>
-                  )}
-                  <div className="score-item">
-                    <span>Tiempo restante:</span>
-                    <span>{scoreBreakdown.timeBonus} segundos = {scoreBreakdown.timeBonus} puntos</span>
-                  </div>
-                </div>
-              </div>
-            )}
             {allCorrect && (
               <p className="perfect-score">¡Perfecto! ¡Todas las respuestas son correctas!</p>
             )}
