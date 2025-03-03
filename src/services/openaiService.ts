@@ -3,7 +3,7 @@ import { APIUsageStats } from './openaiService.d';
 
 const API_URL = 'https://api.openai.com/v1/chat/completions';
 const API_USAGE_KEY = 'tutti_frutti_api_usage';
-const API_KEY_KEY = 'tutti_frutti_api_key';
+const OPENAI_API_KEY = import.meta.env.VITE_OPENAI_API_KEY;
 
 const safeLocalStorage = {
   getItem: (key: string): string | null => {
@@ -35,36 +35,23 @@ export function updateApiUsageStats(stats: APIUsageStats): void {
   safeLocalStorage.setItem(API_USAGE_KEY, JSON.stringify(stats));
 }
 
-// Get API key from localStorage
-export function getApiKey(): string {
-  return safeLocalStorage.getItem(API_KEY_KEY) || '';
-}
-
-// Set API key in localStorage
-export function setApiKey(key: string): void {
-  safeLocalStorage.setItem(API_KEY_KEY, key);
-}
-
-// Check if API key is set
-const isApiKeySet = (): boolean => {
-  const key = getApiKey();
-  return key !== null && key !== '';
+// Check if API key is available
+const isApiKeyAvailable = (): boolean => {
+  return !!OPENAI_API_KEY;
 };
 
 // Make a request to the OpenAI API
 const makeOpenAIRequest = async (messages: any[], model: string = 'gpt-3.5-turbo') => {
-  if (!isApiKeySet()) {
-    throw new Error('API key not set');
+  if (!isApiKeyAvailable()) {
+    throw new Error('OpenAI API key not configured');
   }
-
-  const apiKey = getApiKey();
   
   try {
     const response = await fetch(API_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`
+        'Authorization': `Bearer ${OPENAI_API_KEY}`
       },
       body: JSON.stringify({
         model,
@@ -98,8 +85,8 @@ export const validateWordWithAI = async (
   letter: string,
   categoryId: string
 ): Promise<boolean> => {
-  if (!isApiKeySet()) {
-    throw new Error('API key not set');
+  if (!isApiKeyAvailable()) {
+    throw new Error('OpenAI API key not configured');
   }
 
   if (!word || word.trim() === '') {
@@ -137,8 +124,8 @@ export const validateAnswersWithAI = async (
   letter: string,
   categories: Category[]
 ): Promise<{ categoryId: string; word: string; isCorrect: boolean }[]> => {
-  if (!isApiKeySet()) {
-    throw new Error('API key not set');
+  if (!isApiKeyAvailable()) {
+    throw new Error('OpenAI API key not configured');
   }
 
   const answersToValidate = categories.map(category => {
@@ -231,8 +218,8 @@ export const generateExplanation = async (
   letter: string,
   categoryId: string
 ): Promise<string> => {
-  if (!isApiKeySet()) {
-    throw new Error('API key not set');
+  if (!isApiKeyAvailable()) {
+    throw new Error('OpenAI API key not configured');
   }
 
   if (!word || word.trim() === '') {
@@ -271,8 +258,8 @@ export const generateStory = async (
   correctAnswers: { categoryId: string; word: string }[],
   letter: string
 ): Promise<string> => {
-  if (!isApiKeySet()) {
-    throw new Error('API key not set');
+  if (!isApiKeyAvailable()) {
+    throw new Error('OpenAI API key not configured');
   }
 
   if (correctAnswers.length === 0) {
