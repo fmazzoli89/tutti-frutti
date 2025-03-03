@@ -8,31 +8,38 @@ const OPENAI_API_KEY = import.meta.env.VITE_OPENAI_API_KEY;
 // Memory fallback when localStorage is not available
 const memoryStorage: Record<string, string> = {};
 
+// Check if we're in a browser environment and have localStorage access
+const hasLocalStorage = (): boolean => {
+  try {
+    return typeof window !== 'undefined' && 
+           window.localStorage !== undefined && 
+           window.localStorage !== null;
+  } catch {
+    return false;
+  }
+};
+
 const safeStorage = {
   getItem: (key: string): string | null => {
-    try {
-      // Try localStorage first
-      if (typeof window !== 'undefined' && window.localStorage) {
+    if (hasLocalStorage()) {
+      try {
         return localStorage.getItem(key);
+      } catch (error) {
+        console.warn('Failed to read from localStorage:', error);
       }
-    } catch (error) {
-      console.warn('localStorage not available, using memory storage');
     }
-    // Fallback to memory storage
     return memoryStorage[key] || null;
   },
   
   setItem: (key: string, value: string): void => {
-    try {
-      // Try localStorage first
-      if (typeof window !== 'undefined' && window.localStorage) {
+    if (hasLocalStorage()) {
+      try {
         localStorage.setItem(key, value);
         return;
+      } catch (error) {
+        console.warn('Failed to write to localStorage:', error);
       }
-    } catch (error) {
-      console.warn('localStorage not available, using memory storage');
     }
-    // Fallback to memory storage
     memoryStorage[key] = value;
   }
 };

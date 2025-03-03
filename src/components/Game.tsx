@@ -1,18 +1,29 @@
 import React from 'react';
 import { useGame } from '../context/GameContext';
-import MainScreen from './MainScreen';
 import GameScreen from './GameScreen';
 import ResultsScreen from './ResultsScreen';
 import LoadingSpinner from './LoadingSpinner';
 import '../styles/Game.css';
 
 const Game: React.FC = () => {
-  const { gameState } = useGame();
+  const { gameState, startGame } = useGame();
   const { status } = gameState;
 
   return (
     <div className="game-container">
-      {status === 'idle' && <MainScreen />}
+      {status === 'idle' && (
+        <div className="start-screen">
+          <h1 className="game-title">Tutti-Frutti</h1>
+          <p className="game-description">
+            ¡Bienvenido a Tutti-Frutti! Se te dará una letra al azar y tendrás que escribir 
+            palabras que empiecen con esa letra para diferentes categorías. 
+            Tienes 60 segundos para completar todas las categorías.
+          </p>
+          <button className="start-button" onClick={startGame}>
+            ¡Comenzar Juego!
+          </button>
+        </div>
+      )}
       {status === 'playing' && <GameScreen />}
       {status === 'validating' && (
         <div className="loading-screen">
