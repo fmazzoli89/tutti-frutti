@@ -83,9 +83,10 @@ const ResultsScreen: React.FC = () => {
               </span>
             </div>
             
-            {!answer.isCorrect && answer.example && (
+            {!answer.isCorrect && (
               <div className="answer-example">
-                Ejemplo: <span className="example-word">{answer.example}</span>
+                <span className="example-label">¿Sabías que podrías haber usado?</span>
+                <span className="example-word">{answer.example}</span>
               </div>
             )}
           </div>
