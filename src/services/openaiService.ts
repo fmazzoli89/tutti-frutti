@@ -189,6 +189,7 @@ export const generateExample = async (
       4. For brands, include international brands
       5. For cities, include major cities from any country
       6. Use proper capitalization (e.g., Barcelona, Burger King, Google)
+      7. Used in spanish. Some words are in english but commonly used in spanish (e.g., Football, Superman, email) are fine, but not if they are not commonly used in spanish.
       Respond with just the word with proper capitalization, nothing else.`
     },
     {
