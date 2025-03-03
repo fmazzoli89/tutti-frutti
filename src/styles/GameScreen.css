@@ -26,7 +26,7 @@
   border-radius: 8px;
   font-size: 1.1rem;
   text-align: center;
-  background-color: rgb(255, 255, 255);
+  background-color: white;
 }
 
 .uppercase-input {
@@ -64,26 +64,21 @@
 }
 
 .submit-button {
-  background-color: var(--secondary-color);
+  width: 100%;
+  max-width: 400px;
+  padding: 16px;
+  background: #2196f3;
   color: white;
+  border: none;
+  border-radius: 24px;
   font-size: 1.1rem;
-  padding: 0.75rem 1.5rem;
-  border-radius: 4px;
-  transition: all 0.3s ease;
-  margin-top: 1rem;
-  width: 80%;
-  box-sizing: border-box;
+  margin: 24px auto 0;
+  display: block;
+  cursor: pointer;
 }
 
-.submit-button:hover {
-  background-color: #3dbdb3;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.submit-button:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.submit-button:disabled {
+  background: #ccc;
 }
 
 @media (min-width: 768px) {

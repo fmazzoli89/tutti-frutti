@@ -4,7 +4,7 @@ import '../styles/GameScreen.css';
 
 const GameScreen: React.FC = () => {
   const { gameState, updateAnswer, submitAnswers } = useGame();
-  const { currentLetter, selectedCategories, answers} = gameState;
+  const { currentLetter, selectedCategories, answers } = gameState;
 
   const handleInputChange = (categoryId: string, value: string) => {
     updateAnswer(categoryId, value.toUpperCase());
@@ -15,16 +15,8 @@ const GameScreen: React.FC = () => {
     submitAnswers();
   };
 
-  // const formatTime = (seconds: number): string => {
-  //   const mins = Math.floor(seconds / 60);
-  //   const secs = seconds % 60;
-  //   return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-  // };
-
   return (
     <div className="game-screen">
-      
-
       <form onSubmit={handleSubmit} className="game-form">
         <div className="categories-container">
           {selectedCategories.map((category) => (
