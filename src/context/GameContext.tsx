@@ -3,14 +3,6 @@ import { getRandomLetter, getRandomCategories } from '../data/categories';
 import { GameState, GameContextType, Answer, ValidationEngine } from '../types/game';
 import * as openaiService from '../services/openaiService';
 
-interface ScoreBreakdown {
-  correctWords: number;
-  correctWordsPoints: number;
-  allWordsBonus: number;
-  timeBonus: number;
-  totalScore: number;
-}
-
 const initialGameState: GameState = {
   status: 'idle',
   currentLetter: '',
@@ -18,7 +10,6 @@ const initialGameState: GameState = {
   answers: {},
   timeLeft: 60,
   score: 0,
-  scoreBreakdown: undefined,
   validatedAnswers: [],
   validationEngine: 'ai',
   story: undefined
@@ -41,7 +32,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       answers: {},
       timeLeft: 60,
       score: 0,
-      scoreBreakdown: undefined,
       validatedAnswers: [],
       validationEngine: gameState.validationEngine,
       story: undefined
@@ -74,19 +64,8 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     });
   };
 
-  const calculateScore = (validatedAnswers: Answer[], timeLeft: number): ScoreBreakdown => {
-    const correctWords = validatedAnswers.filter(answer => answer.isCorrect).length;
-    const correctWordsPoints = correctWords * 10;
-    const allWordsBonus = correctWords === 5 ? 20 : 0;
-    const timeBonus = timeLeft;
-    
-    return {
-      correctWords,
-      correctWordsPoints,
-      allWordsBonus,
-      timeBonus,
-      totalScore: correctWordsPoints + allWordsBonus + timeBonus
-    };
+  const calculateScore = (validatedAnswers: Answer[]): number => {
+    return validatedAnswers.filter(answer => answer.isCorrect).length * 10;
   };
 
   const submitAnswers = async () => {
@@ -113,30 +92,16 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         validatedAnswers = aiResults.map(result => ({
           categoryId: result.categoryId,
           word: result.word,
-          isCorrect: result.isCorrect
+          isCorrect: result.isCorrect,
+          example: result.example
         }));
         
-        // Generate explanations for incorrect answers
-        const answersWithExplanations = await Promise.all(
-          validatedAnswers.map(async (answer) => {
-            if (!answer.isCorrect && answer.word.trim() !== '') {
-              try {
-                const explanation = await openaiService.generateExplanation(
-                  answer.word,
-                  gameState.currentLetter,
-                  answer.categoryId
-                );
-                return { ...answer, explanation };
-              } catch (error) {
-                console.error('Error generating explanation:', error);
-                return answer;
-              }
-            }
-            return answer;
-          })
-        );
-        
-        validatedAnswers = answersWithExplanations;
+        setGameState(prev => ({
+          ...prev,
+          status: 'results',
+          validatedAnswers,
+          score
+        }));
       } catch (error) {
         console.error('Error validating with AI, falling back to offline:', error);
         validatedAnswers = validateAnswersOffline();
@@ -145,14 +110,13 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       validatedAnswers = validateAnswersOffline();
     }
     
-    const scoreBreakdown = calculateScore(validatedAnswers, gameState.timeLeft);
+    const score = calculateScore(validatedAnswers);
     
     setGameState(prev => ({
       ...prev,
       status: 'results',
       validatedAnswers,
-      score: scoreBreakdown.totalScore,
-      scoreBreakdown
+      score
     }));
   };
 

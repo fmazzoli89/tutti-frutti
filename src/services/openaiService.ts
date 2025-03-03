@@ -347,47 +347,6 @@ export const validateAnswersWithAI = async (
   }
 };
 
-// Generate an explanation for why a word is incorrect
-export const generateExplanation = async (
-  word: string,
-  letter: string,
-  categoryId: string
-): Promise<string> => {
-  if (!isApiKeyAvailable()) {
-    throw new Error('OpenAI API key not configured');
-  }
-
-  if (!word || word.trim() === '') {
-    return 'No se proporcionó una palabra.';
-  }
-  
-  const messages = [
-    {
-      role: 'system',
-      content: `You are a helpful assistant for a word game called "Tutti Frutti" or "Stop".
-      You need to explain why a word might be incorrect for a specific category and letter.
-      Keep explanations brief, friendly, and educational.`
-    },
-    {
-      role: 'user',
-      content: `Explain briefly in Spanish why the word "${word}" might not be valid for the category "${categoryId}" 
-      with the letter "${letter}". Keep it under 100 characters if possible.`
-    }
-  ];
-
-  try {
-    const response = await makeOpenAIRequest(messages);
-    return response.choices[0].message.content.trim();
-  } catch (error) {
-    console.error('Error generating explanation:', error);
-    // Fallback explanation
-    if (!word.toLowerCase().startsWith(letter.toLowerCase())) {
-      return `La palabra "${word}" no comienza con la letra "${letter.toUpperCase()}".`;
-    }
-    return `La palabra "${word}" no es válida para esta categoría.`;
-  }
-};
-
 // Generate a story using correct words
 export const generateStory = async (
   correctAnswers: { categoryId: string; word: string }[],
