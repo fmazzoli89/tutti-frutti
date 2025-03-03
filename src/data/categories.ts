@@ -1,39 +1,54 @@
-import { commonLetters, easyCategories } from './wordDatabase';
-
 export interface Category {
   id: string;
   name: string;
 }
 
-// Map the category IDs to display names
-const categoryNameMap: Record<string, string> = {
+// Common first letters in Spanish words
+export const commonLetters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'L', 'M', 'N', 'P', 'S'];
+
+// Category names in Spanish
+export const categoryNameMap: Record<string, string> = {
+  'name': 'Nombre',
   'country': 'País',
   'city': 'Ciudad',
-  'food': 'Comida',
   'animal': 'Animal',
-  'name': 'Nombre',
   'fruit': 'Fruta',
-  'profession': 'Profesión',
-  'object': 'Objeto',
+  'food': 'Comida',
   'color': 'Color',
-  'sport': 'Deporte'
+  'profession': 'Profesión',
+  'sport': 'Deporte',
+  'brand': 'Marca',
+  'movie': 'Película',
+  'artist': 'Artista',
+  'soccer_team': 'Equipo de Fútbol',
+  'car_brand': 'Marca de Coche',
+  'flower': 'Flor',
+  'body_part': 'Parte del Cuerpo',
+  'musical_instrument': 'Instrumento Musical',
+  'clothing': 'Ropa',
+  'drink': 'Bebida',
+  'superhero': 'Superhéroe',
+  'school_subject': 'Materia Escolar',
+  'kitchen_item': 'Objeto de Cocina',
+  'furniture': 'Mueble',
+  'transport': 'Transporte',
+  'technology': 'Tecnología'
 };
 
-// Create the categories array from our easyCategories
-export const categories: Category[] = easyCategories.map(id => ({
+// Create categories array from the map
+export const categories: Category[] = Object.entries(categoryNameMap).map(([id, name]) => ({
   id,
-  name: categoryNameMap[id] || id
+  name
 }));
 
-// Use the common letters from our word database
-export const availableLetters = commonLetters;
-
+// Get a random letter from the common letters
 export const getRandomLetter = (): string => {
-  const randomIndex = Math.floor(Math.random() * availableLetters.length);
-  return availableLetters[randomIndex];
+  const randomIndex = Math.floor(Math.random() * commonLetters.length);
+  return commonLetters[randomIndex];
 };
 
-export const getRandomCategories = (count: number = 5): Category[] => {
+// Get random categories
+export const getRandomCategories = (count: number): Category[] => {
   const shuffled = [...categories].sort(() => 0.5 - Math.random());
   return shuffled.slice(0, count);
 }; 

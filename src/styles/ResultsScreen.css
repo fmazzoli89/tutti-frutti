@@ -275,7 +275,19 @@
 
 .current-letter {
   font-size: 1.4rem;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  background-color: #2196f3;
+  color: white;
+  padding: 0.5rem 1.5rem;
+  border-radius: 8px;
+  display: inline-block;
+}
+
+.current-letter .highlight {
+  color: white;
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-left: 0.5rem;
 }
 
 .answer-example {

@@ -153,19 +153,25 @@ export const generateExample = async (
       role: 'system',
       content: `You are a helpful assistant for a word game called "Tutti Frutti" or "Stop".
       You need to provide one valid example word for a given category that starts with a specific letter.
-      The word must be a valid Spanish word and commonly used in Spanish-speaking countries.
-      Respond with just the word, nothing else.`
+      The word must be:
+      1. A valid Spanish word commonly used in Spanish-speaking countries
+      2. Start with the specified letter
+      3. Be a well-known example for the category
+      4. For soccer teams, prefer well-known teams from Spanish-speaking countries or major European leagues
+      Respond with just the word in proper Spanish capitalization, nothing else.`
     },
     {
       role: 'user',
       content: `Give me one valid Spanish word for the category "${categoryId}" that starts with the letter "${letter}".
-      Respond with just the word in lowercase, nothing else.`
+      Make sure it's a well-known example that most Spanish speakers would recognize.
+      Respond with just the word with proper capitalization, nothing else.`
     }
   ];
 
   try {
     const response = await makeOpenAIRequest(messages);
-    return response.choices[0].message.content.trim().toLowerCase();
+    const example = response.choices[0].message.content.trim();
+    return example;
   } catch (error) {
     console.error('Error generating example:', error);
     return 'No se pudo generar un ejemplo.';
