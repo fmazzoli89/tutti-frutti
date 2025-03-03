@@ -11,7 +11,7 @@ const initialGameState: GameState = {
   timeLeft: 60,
   score: 0,
   validatedAnswers: [],
-  validationEngine: 'offline',
+  validationEngine: 'ai',
   story: undefined
 };
 
