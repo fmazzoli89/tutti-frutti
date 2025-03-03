@@ -23,15 +23,6 @@ const safeLocalStorage = {
   }
 };
 
-// Initialize API usage stats
-const initializeAPIUsageStats = (): APIUsageStats => {
-  return {
-    requestCount: 0,
-    totalTokens: 0,
-    timestamp: new Date().toISOString()
-  };
-};
-
 // Get API usage stats from localStorage
 export function getApiUsageStats(): APIUsageStats {
   const storedStats = safeLocalStorage.getItem(API_USAGE_KEY);
