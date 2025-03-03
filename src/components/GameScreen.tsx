@@ -47,7 +47,7 @@ const GameScreen: React.FC = () => {
         </div>
 
         <button type="submit" className="submit-button">
-          Enviar Respuestas
+          Enviar Respuestas!
         </button>
       </form>
     </div>
