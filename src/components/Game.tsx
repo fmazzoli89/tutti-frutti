@@ -7,8 +7,8 @@ import Timer from './Timer';
 import '../styles/Game.css';
 
 const Game: React.FC = () => {
-  const { gameState, startGame, updateAnswer } = useGame();
-  const { status, currentLetter, selectedCategories, answers, timeLeft } = gameState;
+  const { gameState, startGame } = useGame();
+  const { status, timeLeft } = gameState;
 
   return (
     <div className="game-container">
