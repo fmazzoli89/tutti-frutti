@@ -140,11 +140,6 @@ export const validateAnswersWithAI = async (
     throw new Error('API key not set');
   }
 
-  const categoryMap = categories.reduce((map, category) => {
-    map[category.id] = category.name;
-    return map;
-  }, {} as Record<string, string>);
-
   const answersToValidate = categories.map(category => {
     const word = answers[category.id] || '';
     return {
