@@ -64,8 +64,23 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     });
   };
 
-  const calculateScore = (validatedAnswers: Answer[]): number => {
-    return validatedAnswers.filter(answer => answer.isCorrect).length * 10;
+  const calculateScore = (validatedAnswers: Answer[]): {
+    total: number;
+    correctWordsPoints: number;
+    bonusPoints: number;
+    timePoints: number;
+  } => {
+    const correctWords = validatedAnswers.filter(answer => answer.isCorrect).length;
+    const correctWordsPoints = correctWords * 10;
+    const bonusPoints = correctWords === 5 ? 20 : 0;
+    const timePoints = gameState.timeLeft;
+    
+    return {
+      total: correctWordsPoints + bonusPoints + timePoints,
+      correctWordsPoints,
+      bonusPoints,
+      timePoints
+    };
   };
 
   const submitAnswers = async () => {
@@ -103,13 +118,14 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       validatedAnswers = validateAnswersOffline();
     }
     
-    const score = calculateScore(validatedAnswers);
+    const scoreDetails = calculateScore(validatedAnswers);
     
     setGameState(prev => ({
       ...prev,
       status: 'results',
       validatedAnswers,
-      score
+      score: scoreDetails.total,
+      scoreDetails
     }));
   };
 

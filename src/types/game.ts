@@ -26,7 +26,12 @@ export interface GameState {
   answers: Record<string, string>;
   timeLeft: number;
   score: number;
-  scoreBreakdown?: ScoreBreakdown;
+  scoreDetails?: {
+    total: number;
+    correctWordsPoints: number;
+    bonusPoints: number;
+    timePoints: number;
+  };
   validatedAnswers: Answer[];
   validationEngine: ValidationEngine;
   story?: string;

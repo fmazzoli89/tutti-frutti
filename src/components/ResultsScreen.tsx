@@ -37,70 +37,87 @@ const ResultsScreen: React.FC = () => {
       
       <h2 className="results-title">Resultados</h2>
       
-      <div className="results-summary">
-        <p className="current-letter">
-          Letra: <span className="highlight">{currentLetter.toUpperCase()}</span>
-        </p>
-        {scoreBreakdown && (
-          <div className="score-breakdown">
-            <h3>Puntuación Total: <span className="highlight">{score}</span></h3>
-            <div className="score-details">
-              <div className="score-item">
-                <span>Palabras correctas:</span>
-                <span>{scoreBreakdown.correctWords} × 10 = {scoreBreakdown.correctWordsPoints} puntos</span>
-              </div>
-              {scoreBreakdown.allWordsBonus > 0 && (
-                <div className="score-item bonus">
-                  <span>¡Bonus por todas correctas!</span>
-                  <span>{scoreBreakdown.allWordsBonus} puntos</span>
-                </div>
+      <div className="results-container">
+        <div className="score-section">
+          <h2>Puntaje Total: {gameState.score}</h2>
+          {gameState.scoreDetails && (
+            <div className="score-breakdown">
+              <p>Palabras correctas: {gameState.scoreDetails.correctWordsPoints} puntos</p>
+              {gameState.scoreDetails.bonusPoints > 0 && (
+                <p>¡Bonus por todas correctas! +{gameState.scoreDetails.bonusPoints} puntos</p>
               )}
-              <div className="score-item">
-                <span>Tiempo restante:</span>
-                <span>{scoreBreakdown.timeBonus} segundos = {scoreBreakdown.timeBonus} puntos</span>
-              </div>
+              <p>Tiempo restante: +{gameState.scoreDetails.timePoints} puntos</p>
             </div>
-          </div>
-        )}
-        {allCorrect && (
-          <p className="perfect-score">¡Perfecto! ¡Todas las respuestas son correctas!</p>
-        )}
-      </div>
-      
-      <div className="results-details">
-        {validatedAnswers.map((answer) => (
-          <div 
-            key={answer.categoryId} 
-            className="answer-item"
-          >
-            <div className="answer-header">
-              <span className="category-name">{categoryMap[answer.categoryId]}</span>
-              <span className={`answer-word ${answer.isCorrect ? 'correct' : 'incorrect'}`}>
-                {answer.word || '(sin respuesta)'}
-              </span>
-              <span className={answer.isCorrect ? 'correct' : 'incorrect'}>
-                {answer.isCorrect ? '✓' : '✗'}
-              </span>
-            </div>
-            
-            {!answer.isCorrect && (
-              <div className="answer-example">
-                <span className="example-label">¿Sabías que podrías haber usado?</span>
-                <span className="example-word">{answer.example}</span>
+          )}
+        </div>
+
+        <div className="answers-section">
+          <div className="results-summary">
+            <p className="current-letter">
+              Letra: <span className="highlight">{currentLetter.toUpperCase()}</span>
+            </p>
+            {scoreBreakdown && (
+              <div className="score-breakdown">
+                <h3>Puntuación Total: <span className="highlight">{score}</span></h3>
+                <div className="score-details">
+                  <div className="score-item">
+                    <span>Palabras correctas:</span>
+                    <span>{scoreBreakdown.correctWords} × 10 = {scoreBreakdown.correctWordsPoints} puntos</span>
+                  </div>
+                  {scoreBreakdown.allWordsBonus > 0 && (
+                    <div className="score-item bonus">
+                      <span>¡Bonus por todas correctas!</span>
+                      <span>{scoreBreakdown.allWordsBonus} puntos</span>
+                    </div>
+                  )}
+                  <div className="score-item">
+                    <span>Tiempo restante:</span>
+                    <span>{scoreBreakdown.timeBonus} segundos = {scoreBreakdown.timeBonus} puntos</span>
+                  </div>
+                </div>
               </div>
             )}
+            {allCorrect && (
+              <p className="perfect-score">¡Perfecto! ¡Todas las respuestas son correctas!</p>
+            )}
           </div>
-        ))}
-      </div>
-      
-      {story && (
-        <div className="story-section">
-          <h3 className="story-title">Historia con tus palabras correctas</h3>
-          <div className="story-content">
-            {story}
+          
+          <div className="results-details">
+            {validatedAnswers.map((answer) => (
+              <div 
+                key={answer.categoryId} 
+                className="answer-item"
+              >
+                <div className="answer-header">
+                  <span className="category-name">{categoryMap[answer.categoryId]}</span>
+                  <span className={`answer-word ${answer.isCorrect ? 'correct' : 'incorrect'}`}>
+                    {answer.word || '(sin respuesta)'}
+                  </span>
+                  <span className={answer.isCorrect ? 'correct' : 'incorrect'}>
+                    {answer.isCorrect ? '✓' : '✗'}
+                  </span>
+                </div>
+                
+                {!answer.isCorrect && (
+                  <div className="answer-example">
+                    <span className="example-label">¿Sabías que podrías haber usado?</span>
+                    <span className="example-word">{answer.example}</span>
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
+          
+          {story && (
+            <div className="story-section">
+              <h3 className="story-title">Historia con tus palabras correctas</h3>
+              <div className="story-content">
+                {story}
+              </div>
+            </div>
+          )}
         </div>
-      )}
+      </div>
       
       <div className="button-container">
         {hasCorrectAnswers && !story && (
