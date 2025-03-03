@@ -54,7 +54,7 @@ const isApiKeySet = (): boolean => {
 export const validateWordWithAI = async (
   word: string,
   letter: string,
-  categoryId: string
+  _categoryId: string  // Prefix with underscore to indicate it's not used
 ): Promise<boolean> => {
   if (!isApiKeySet()) {
     throw new Error('API key not set');
@@ -107,7 +107,7 @@ export const validateAnswersWithAI = async (
 export const generateExplanation = async (
   word: string,
   letter: string,
-  categoryId: string
+  _categoryId: string  // Prefix with underscore to indicate it's not used
 ): Promise<string> => {
   if (!isApiKeySet()) {
     throw new Error('API key not set');

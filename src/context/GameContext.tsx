@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { getRandomLetter, getRandomCategories } from '../data/categories';
-import { isValidWord } from '../data/wordDatabase';
 import { GameState, GameContextType, Answer, ValidationEngine } from '../types/game';
 import * as openaiService from '../services/openaiService';
 
