@@ -3,11 +3,12 @@ import { useGame } from '../context/GameContext';
 import GameScreen from './GameScreen';
 import ResultsScreen from './ResultsScreen';
 import LoadingSpinner from './LoadingSpinner';
+import Timer from './Timer';
 import '../styles/Game.css';
 
 const Game: React.FC = () => {
-  const { gameState, startGame } = useGame();
-  const { status } = gameState;
+  const { gameState, startGame, updateAnswer } = useGame();
+  const { status, currentLetter, selectedCategories, answers, timeLeft } = gameState;
 
   return (
     <div className="game-container">
@@ -24,7 +25,12 @@ const Game: React.FC = () => {
           </button>
         </div>
       )}
-      {status === 'playing' && <GameScreen />}
+      {status === 'playing' && (
+        <>
+          <Timer timeLeft={timeLeft} />
+          <GameScreen />
+        </>
+      )}
       {status === 'validating' && (
         <div className="loading-screen">
           <h2>Verificando respuestas...</h2>

@@ -189,7 +189,8 @@ export const generateExample = async (
       4. For brands, include international brands
       5. For cities, include major cities from any country
       6. Use proper capitalization (e.g., Barcelona, Burger King, Google)
-      7. Used in spanish. Some words are in english but commonly used in spanish (e.g., Football, Superman, email) are fine, but not if they are not commonly used in spanish.
+      7. Is a word in the spanish dictionary. 
+      8. Some words are in english but commonly used in spanish (e.g., Football, Superman, email) are fine, but not if they are not commonly used in spanish.
       Respond with just the word with proper capitalization, nothing else.`
     },
     {
@@ -254,6 +255,9 @@ export const validateAnswersWithAI = async (
       4. For soccer teams, accept any real professional team from any country
       5. For brands, accept international brands as well
       6. For cities, accept any real city from any country
+      7. Is a word in the spanish dictionary. 
+      8. Some words are in english but commonly used in spanish (e.g., Football, Superman, email) are fine, but not if they are not commonly used in spanish.
+      Respond with just the word with proper capitalization, nothing else.
       Respond with a JSON array where each item has "categoryId" and "isCorrect" properties.
       Be inclusive with proper nouns and international terms as long as they're real and commonly known.`
     },
