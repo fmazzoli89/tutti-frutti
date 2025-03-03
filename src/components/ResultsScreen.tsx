@@ -2,50 +2,103 @@ import React from 'react';
 import { useGame } from '../context/GameContext';
 import Fireworks from './Fireworks';
 import '../styles/ResultsScreen.css';
+import LoadingSpinner from './LoadingSpinner';
+import { GameStatus } from '../types/game';
 
 const ResultsScreen: React.FC = () => {
-  const { gameState, playAgain } = useGame();
-  const { currentLetter, validatedAnswers, score, selectedCategories } = gameState;
+  const { gameState, playAgain, generateStory } = useGame();
+  const { currentLetter, validatedAnswers, score, selectedCategories, status, story } = gameState;
 
-  // Check if all answers are correct (perfect score)
-  const isPerfectScore = validatedAnswers.every(answer => answer.isCorrect);
-
+  // Check if all answers are correct for a perfect score
+  const allCorrect = validatedAnswers.every(answer => answer.isCorrect);
+  
   // Create a map of category IDs to names for easy lookup
-  const categoryMap = selectedCategories.reduce((acc, category) => {
-    acc[category.id] = category.name;
-    return acc;
+  const categoryMap = selectedCategories.reduce((map, category) => {
+    map[category.id] = category.name;
+    return map;
   }, {} as Record<string, string>);
+  
+  // Check if there are any correct answers to enable story generation
+  const hasCorrectAnswers = validatedAnswers.some(answer => answer.isCorrect);
+  
+  // Show loading spinner when generating story
+  if (status === 'generating-story') {
+    return (
+      <div className="results-screen">
+        <h2 className="results-title">Generando historia...</h2>
+        <LoadingSpinner />
+      </div>
+    );
+  }
 
   return (
     <div className="results-screen">
-      {isPerfectScore && <Fireworks duration={6000} />}
+      {allCorrect && <Fireworks />}
       
       <h2 className="results-title">Resultados</h2>
       
       <div className="results-summary">
-        <p>Letra: <span className="highlight">{currentLetter}</span></p>
-        <p>Puntuación: <span className="highlight">{score}</span></p>
-        {isPerfectScore && <p className="perfect-score">¡Puntuación perfecta! ¡Felicidades!</p>}
+        <p>
+          Letra: <span className="highlight">{currentLetter.toUpperCase()}</span> | 
+          Puntuación: <span className="highlight">{score}</span>
+        </p>
+        {allCorrect && (
+          <p className="perfect-score">¡Perfecto! ¡Todas las respuestas son correctas!</p>
+        )}
       </div>
       
       <div className="results-details">
-        <h3>Tus respuestas:</h3>
-        <ul className="answers-list">
-          {validatedAnswers.map((answer, index) => (
-            <li key={index} className={`answer-item ${answer.isCorrect ? 'correct' : 'incorrect'}`}>
-              <span className="category-name">{categoryMap[answer.categoryId]}:</span>
-              <span className="answer-word">{answer.word || '(sin respuesta)'}</span>
-              <span className="answer-status">
+        {validatedAnswers.map((answer) => (
+          <div 
+            key={answer.categoryId} 
+            className="answer-item"
+          >
+            <div className="answer-header">
+              <span className="category-name">{categoryMap[answer.categoryId]}</span>
+              <span className={`answer-word ${answer.isCorrect ? 'correct' : 'incorrect'}`}>
+                {answer.word || '(sin respuesta)'}
+              </span>
+              <span className={answer.isCorrect ? 'correct' : 'incorrect'}>
                 {answer.isCorrect ? '✓' : '✗'}
               </span>
-            </li>
-          ))}
-        </ul>
+            </div>
+            
+            {!answer.isCorrect && answer.explanation && (
+              <div className="answer-explanation">
+                {answer.explanation}
+              </div>
+            )}
+          </div>
+        ))}
       </div>
       
-      <button className="play-again-button" onClick={playAgain}>
-        Jugar de nuevo
-      </button>
+      {story && (
+        <div className="story-section">
+          <h3 className="story-title">Historia con tus palabras correctas</h3>
+          <div className="story-content">
+            {story}
+          </div>
+        </div>
+      )}
+      
+      <div className="button-container">
+        {hasCorrectAnswers && !story && (
+          <button 
+            className="generate-story-btn"
+            onClick={generateStory}
+            disabled={status === 'generating-story' as GameStatus}
+          >
+            Generar historia con palabras correctas
+          </button>
+        )}
+        
+        <button 
+          className="play-again-btn"
+          onClick={playAgain}
+        >
+          Jugar de nuevo
+        </button>
+      </div>
     </div>
   );
 };

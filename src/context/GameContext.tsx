@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { getRandomLetter, getRandomCategories } from '../data/categories';
-import { isValidWord } from '../data/wordDatabase';
-import { GameState, GameContextType, Answer } from '../types/game';
+import { GameState, GameContextType, Answer, ValidationEngine } from '../types/game';
+import * as openaiService from '../services/openaiService';
 
 const initialGameState: GameState = {
   status: 'idle',
@@ -11,6 +11,8 @@ const initialGameState: GameState = {
   timeLeft: 60,
   score: 0,
   validatedAnswers: [],
+  validationEngine: 'offline',
+  story: undefined
 };
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -31,6 +33,8 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       timeLeft: 60,
       score: 0,
       validatedAnswers: [],
+      validationEngine: gameState.validationEngine,
+      story: undefined
     });
   };
 
@@ -44,12 +48,13 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }));
   };
 
-  const validateAnswers = (): Answer[] => {
+  const validateAnswersOffline = (): Answer[] => {
     const { currentLetter, selectedCategories, answers } = gameState;
     
     return selectedCategories.map(category => {
       const word = answers[category.id] || '';
-      const isCorrect = isValidWord(word, currentLetter, category.id);
+      const isCorrect = word.toLowerCase().startsWith(currentLetter.toLowerCase()) && 
+                        word.trim() !== '';
       
       return {
         categoryId: category.id,
@@ -60,18 +65,65 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const calculateScore = (validatedAnswers: Answer[]): number => {
-    const correctAnswers = validatedAnswers.filter(answer => answer.isCorrect).length;
-    // 1 point per correct word + 2 bonus points if all 5 are correct
-    return correctAnswers + (correctAnswers === 5 ? 2 : 0);
+    return validatedAnswers.filter(answer => answer.isCorrect).length * 10;
   };
 
-  const submitAnswers = () => {
+  const submitAnswers = async () => {
     if (timer) {
       clearInterval(timer);
       setTimer(null);
     }
     
-    const validatedAnswers = validateAnswers();
+    setGameState(prev => ({
+      ...prev,
+      status: 'validating'
+    }));
+    
+    let validatedAnswers: Answer[];
+    
+    if (gameState.validationEngine === 'ai') {
+      try {
+        const aiResults = await openaiService.validateAnswersWithAI(
+          gameState.answers,
+          gameState.currentLetter,
+          gameState.selectedCategories
+        );
+        
+        validatedAnswers = aiResults.map(result => ({
+          categoryId: result.categoryId,
+          word: result.word,
+          isCorrect: result.isCorrect
+        }));
+        
+        // Generate explanations for incorrect answers
+        const answersWithExplanations = await Promise.all(
+          validatedAnswers.map(async (answer) => {
+            if (!answer.isCorrect && answer.word.trim() !== '') {
+              try {
+                const explanation = await openaiService.generateExplanation(
+                  answer.word,
+                  gameState.currentLetter,
+                  answer.categoryId
+                );
+                return { ...answer, explanation };
+              } catch (error) {
+                console.error('Error generating explanation:', error);
+                return answer;
+              }
+            }
+            return answer;
+          })
+        );
+        
+        validatedAnswers = answersWithExplanations;
+      } catch (error) {
+        console.error('Error validating with AI, falling back to offline:', error);
+        validatedAnswers = validateAnswersOffline();
+      }
+    } else {
+      validatedAnswers = validateAnswersOffline();
+    }
+    
     const score = calculateScore(validatedAnswers);
     
     setGameState(prev => ({
@@ -84,6 +136,50 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const playAgain = () => {
     startGame();
+  };
+
+  const setValidationEngine = (engine: ValidationEngine) => {
+    setGameState(prev => ({
+      ...prev,
+      validationEngine: engine
+    }));
+  };
+
+  const generateStory = async () => {
+    // Only generate a story if we're in the results state and have correct answers
+    if (gameState.status !== 'results') return;
+    
+    const correctAnswers = gameState.validatedAnswers.filter(answer => answer.isCorrect);
+    if (correctAnswers.length === 0) return;
+    
+    // Set status to generating-story to show loading spinner
+    setGameState(prev => ({
+      ...prev,
+      status: 'generating-story'
+    }));
+    
+    try {
+      const story = await openaiService.generateStory(
+        correctAnswers.map(answer => ({
+          categoryId: answer.categoryId,
+          word: answer.word
+        })),
+        gameState.currentLetter
+      );
+      
+      setGameState(prev => ({
+        ...prev,
+        status: 'results',
+        story
+      }));
+    } catch (error) {
+      console.error('Error generating story:', error);
+      setGameState(prev => ({
+        ...prev,
+        status: 'results',
+        story: 'No se pudo generar una historia. Asegúrate de tener configurada la clave de API.'
+      }));
+    }
   };
 
   useEffect(() => {
@@ -104,7 +200,15 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, [gameState.status, gameState.timeLeft]);
 
   return (
-    <GameContext.Provider value={{ gameState, startGame, updateAnswer, submitAnswers, playAgain }}>
+    <GameContext.Provider value={{ 
+      gameState, 
+      startGame, 
+      updateAnswer, 
+      submitAnswers, 
+      playAgain,
+      setValidationEngine,
+      generateStory
+    }}>
       {children}
     </GameContext.Provider>
   );
