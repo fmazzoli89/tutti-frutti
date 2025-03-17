@@ -35,14 +35,15 @@ export interface GameState {
   validatedAnswers: Answer[];
   validationEngine: ValidationEngine;
   story?: string;
+  gameId?: string;
 }
 
 export interface GameContextType {
   gameState: GameState;
-  startGame: () => void;
+  startGame: () => Promise<void>;
   submitAnswers: () => void;
   updateAnswer: (categoryId: string, word: string) => void;
-  playAgain: () => void;
+  playAgain: () => Promise<void>;
   setValidationEngine: (engine: ValidationEngine) => void;
   generateStory: () => Promise<void>;
 } 

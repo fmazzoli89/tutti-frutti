@@ -22,22 +22,44 @@ const GameContext = createContext<GameContextType | undefined>(undefined);
 export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [gameState, setGameState] = useState<GameState>(initialGameState);
   const [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
+  const { user } = useAuth();
 
-  const startGame = () => {
+  const startGame = async () => {
+    if (!user) return;
+    
     const letter = getRandomLetter();
     const categories = getRandomCategories(5);
     
-    setGameState({
-      status: 'playing',
-      currentLetter: letter,
-      selectedCategories: categories,
-      answers: {},
-      timeLeft: 60,
-      score: 0,
-      validatedAnswers: [],
-      validationEngine: gameState.validationEngine,
-      story: undefined
-    });
+    try {
+      const game = await gameService.createGame(letter);
+      
+      setGameState({
+        status: 'playing',
+        currentLetter: letter,
+        selectedCategories: categories,
+        answers: {},
+        timeLeft: 60,
+        score: 0,
+        validatedAnswers: [],
+        validationEngine: gameState.validationEngine,
+        story: undefined,
+        gameId: game.id
+      });
+    } catch (error) {
+      console.error('Error creating game:', error);
+      // Still start the game in local mode if DB fails
+      setGameState({
+        status: 'playing',
+        currentLetter: letter,
+        selectedCategories: categories,
+        answers: {},
+        timeLeft: 60,
+        score: 0,
+        validatedAnswers: [],
+        validationEngine: gameState.validationEngine,
+        story: undefined
+      });
+    }
   };
 
   const updateAnswer = (categoryId: string, word: string) => {
@@ -121,6 +143,32 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
     
     const scoreDetails = calculateScore(validatedAnswers);
+
+    // Save game results if we have a gameId
+    if (gameState.gameId && user) {
+      try {
+        // Submit each answer
+        await Promise.all(validatedAnswers.map(answer => 
+          gameService.submitAnswer(
+            gameState.gameId!,
+            answer.categoryId,
+            answer.word,
+            answer.isCorrect || false
+          )
+        ));
+
+        // Submit final score
+        await gameService.submitScore(
+          gameState.gameId,
+          scoreDetails.total,
+          validatedAnswers.filter(a => a.isCorrect).length,
+          scoreDetails.bonusPoints,
+          scoreDetails.timePoints
+        );
+      } catch (error) {
+        console.error('Error saving game results:', error);
+      }
+    }
     
     setGameState(prev => ({
       ...prev,
@@ -131,8 +179,8 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }));
   };
 
-  const playAgain = () => {
-    startGame();
+  const playAgain = async () => {
+    await startGame();
   };
 
   const setValidationEngine = (engine: ValidationEngine) => {
