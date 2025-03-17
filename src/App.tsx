@@ -1,50 +1,57 @@
-import { GameProvider } from './context/GameContext';
-import Game from './components/Game';
-import VersionInfo from './components/VersionInfo';
-import './styles/index.css';
-import { Component, ErrorInfo, ReactNode } from 'react';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import GameScreen from './components/GameScreen';
+import LoginPage from './components/LoginPage';
+import SignUpPage from './components/SignUpPage';
+import './App.css';
 
-class ErrorBoundary extends Component<
-  { children: ReactNode },
-  { hasError: boolean; error: Error | null }
-> {
-  constructor(props: { children: ReactNode }) {
-    super(props);
-    this.state = { hasError: false, error: null };
+// Protected route wrapper
+const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return <div>Loading...</div>;
   }
 
-  static getDerivedStateFromError(error: Error) {
-    return { hasError: true, error };
+  if (!user) {
+    return <Navigate to="/login" />;
   }
 
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('Error caught by boundary:', error, errorInfo);
+  return <>{children}</>;
+};
+
+// Main app content
+const AppContent: React.FC = () => {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return <div>Loading...</div>;
   }
 
-  render() {
-    if (this.state.hasError) {
-      return (
-        <div style={{ padding: '20px', color: 'red' }}>
-          <h1>Something went wrong.</h1>
-          <pre>{this.state.error?.message}</pre>
-        </div>
-      );
-    }
-
-    return this.props.children;
-  }
-}
+  return (
+    <Router>
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignUpPage />} />
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <GameScreen />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </Router>
+  );
+};
 
 function App() {
   return (
-    <ErrorBoundary>
-      <div className="app">
-        <GameProvider>
-          <Game />
-        </GameProvider>
-        <VersionInfo />
-      </div>
-    </ErrorBoundary>
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 }
 
