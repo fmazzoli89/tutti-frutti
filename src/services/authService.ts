@@ -3,55 +3,31 @@ import type { Database } from '../lib/supabase';
 
 type User = Database['public']['Tables']['users']['Row'];
 
-export const authService = {
+class AuthService {
   async signUp(email: string, password: string, username: string) {
-    console.log('Starting signup process...');
-    
-    try {
-      // First, check if username is available
-      const { data: existingUser } = await supabase
+    const { data: authData, error: signUpError } = await supabase.auth.signUp({
+      email,
+      password,
+    });
+
+    if (signUpError) throw signUpError;
+
+    if (authData.user) {
+      const { error: profileError } = await supabase
         .from('users')
-        .select('username')
-        .eq('username', username)
-        .single();
+        .insert([
+          {
+            id: authData.user.id,
+            username,
+            email,
+          },
+        ]);
 
-      if (existingUser) {
-        throw new Error('Username is already taken');
-      }
-
-      // Create the auth user
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
-          data: {
-            username, // Store username in metadata
-          }
-        }
-      });
-
-      if (authError) {
-        console.error('Auth signup error:', authError);
-        throw authError;
-      }
-
-      if (!authData.user?.id) {
-        throw new Error('No user ID returned from signup');
-      }
-
-      console.log('Auth signup successful:', authData);
-
-      // Return success message
-      return {
-        message: 'Please check your email for confirmation link',
-        user: authData.user
-      };
-    } catch (error) {
-      console.error('Signup process error:', error);
-      throw error;
+      if (profileError) throw profileError;
     }
-  },
+
+    return authData;
+  }
 
   async handleEmailConfirmation(userId: string, username: string) {
     try {
@@ -125,12 +101,7 @@ export const authService = {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-        queryParams: {
-          access_type: 'offline',
-          prompt: 'consent'
-        },
-        skipBrowserRedirect: false
+        redirectTo: `${window.location.origin}/callback`
       }
     });
 
@@ -167,4 +138,6 @@ export const authService = {
       throw error;
     }
   },
-}; 
+}
+
+export const authService = new AuthService(); 
