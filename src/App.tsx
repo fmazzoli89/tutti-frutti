@@ -5,6 +5,7 @@ import { GameProvider } from './context/GameContext';
 import GameScreen from './components/GameScreen';
 import LoginPage from './components/LoginPage';
 import SignUpPage from './components/SignUpPage';
+import { authService } from './services/authService';
 import './App.css';
 
 // Protected route wrapper
@@ -51,13 +52,30 @@ const AppContent: React.FC = () => {
 // Auth callback handler
 const AuthCallback: React.FC = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   
   useEffect(() => {
-    // After auth callback, redirect to home
-    navigate('/');
+    const handleCallback = async () => {
+      try {
+        const hashParams = new URLSearchParams(window.location.hash.substring(1));
+        if (hashParams.has('access_token')) {
+          // Wait for Supabase to process the auth state
+          await new Promise(resolve => setTimeout(resolve, 500));
+          await authService.handleCallback();
+          navigate('/', { replace: true });
+        } else {
+          navigate('/login', { replace: true });
+        }
+      } catch (error) {
+        console.error('Error in auth callback:', error);
+        navigate('/login', { replace: true });
+      }
+    };
+
+    handleCallback();
   }, [navigate]);
 
-  return <div>Loading...</div>;
+  return <div>Completing sign in...</div>;
 };
 
 function App() {

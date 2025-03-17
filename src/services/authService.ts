@@ -129,11 +129,25 @@ export const authService = {
         queryParams: {
           access_type: 'offline',
           prompt: 'consent'
-        }
+        },
+        skipBrowserRedirect: false
       }
     });
 
     if (error) throw error;
     return data;
+  },
+
+  async handleCallback() {
+    const { data: { user }, error } = await supabase.auth.getUser();
+    if (error) throw error;
+    
+    if (user && !user.user_metadata.username) {
+      // Create a username from email if not set
+      const username = user.email?.split('@')[0] || `user_${Date.now()}`;
+      await this.handleEmailConfirmation(user.id, username);
+    }
+    
+    return user;
   },
 }; 
