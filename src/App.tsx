@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { GameProvider } from './context/GameContext';
 import GameScreen from './components/GameScreen';
 import LoginPage from './components/LoginPage';
 import SignUpPage from './components/SignUpPage';
@@ -37,7 +38,9 @@ const AppContent: React.FC = () => {
           path="/"
           element={
             <ProtectedRoute>
-              <GameScreen />
+              <GameProvider>
+                <GameScreen />
+              </GameProvider>
             </ProtectedRoute>
           }
         />
