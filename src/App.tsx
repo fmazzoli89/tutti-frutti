@@ -45,6 +45,7 @@ const AppContent: React.FC = () => {
         }
       />
       <Route path="/auth/callback" element={<AuthCallback />} />
+      <Route path="/auth/v1/callback" element={<AuthCallback />} />
     </Routes>
   );
 };
@@ -52,17 +53,46 @@ const AppContent: React.FC = () => {
 // Auth callback handler
 const AuthCallback: React.FC = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   
   useEffect(() => {
     const handleCallback = async () => {
       try {
+        // Check if we have an error in the URL
+        const params = new URLSearchParams(window.location.search);
+        const error = params.get('error');
+        const errorDescription = params.get('error_description');
+        
+        if (error) {
+          console.error('Auth error:', error, errorDescription);
+          navigate('/login', { replace: true });
+          return;
+        }
+
+        // Handle hash params (for implicit flow)
         const hashParams = new URLSearchParams(window.location.hash.substring(1));
-        if (hashParams.has('access_token')) {
+        const accessToken = hashParams.get('access_token');
+        
+        if (accessToken) {
           // Wait for Supabase to process the auth state
-          await new Promise(resolve => setTimeout(resolve, 500));
-          await authService.handleCallback();
-          navigate('/', { replace: true });
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          
+          // If we have a user, go to home, otherwise wait a bit more
+          if (user) {
+            navigate('/', { replace: true });
+          } else {
+            // Wait a bit more and check again
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            if (user) {
+              navigate('/', { replace: true });
+            } else {
+              // If still no user, try to handle callback manually
+              await authService.handleCallback();
+              navigate('/', { replace: true });
+            }
+          }
         } else {
+          // No access token found, go to login
           navigate('/login', { replace: true });
         }
       } catch (error) {
@@ -72,7 +102,7 @@ const AuthCallback: React.FC = () => {
     };
 
     handleCallback();
-  }, [navigate]);
+  }, [navigate, user]);
 
   return <div>Completing sign in...</div>;
 };

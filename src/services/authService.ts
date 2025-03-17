@@ -139,15 +139,36 @@ export const authService = {
   },
 
   async handleCallback() {
-    const { data: { user }, error } = await supabase.auth.getUser();
-    if (error) throw error;
-    
-    if (user && !user.user_metadata.username) {
-      // Create a username from email if not set
-      const username = user.email?.split('@')[0] || `user_${Date.now()}`;
-      await this.handleEmailConfirmation(user.id, username);
+    // Get the current session
+    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+    if (sessionError) throw sessionError;
+
+    // Get the user
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    if (userError) throw userError;
+
+    if (!user) {
+      throw new Error('No user found after authentication');
     }
-    
-    return user;
+
+    try {
+      // Check if user profile exists
+      const { data: profile } = await supabase
+        .from('users')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+
+      if (!profile) {
+        // Create user profile if it doesn't exist
+        const username = user.email?.split('@')[0] || `user_${Date.now()}`;
+        await this.handleEmailConfirmation(user.id, username);
+      }
+
+      return user;
+    } catch (error) {
+      console.error('Error handling callback:', error);
+      throw error;
+    }
   },
 }; 
