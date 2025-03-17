@@ -110,14 +110,15 @@ export const gameService = {
       .from('game_scores')
       .select(`
         score,
-        users:user_id (
+        users!inner (
           username
         )
       `)
-      .order('score', { ascending: false })
-      .limit(10);
+      .returns<{ score: number; users: { username: string } }[]>();
 
     if (error) throw error;
+
+    if (!data) return [];
 
     // Aggregate scores by user
     const userScores = data.reduce((acc: { [key: string]: number }, curr) => {

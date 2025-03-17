@@ -2,6 +2,8 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { getRandomLetter, getRandomCategories } from '../data/categories';
 import { GameState, GameContextType, Answer, ValidationEngine } from '../types/game';
 import * as openaiService from '../services/openaiService';
+import { useAuth } from './AuthContext';
+import { gameService } from '../services/gameService';
 
 const initialGameState: GameState = {
   status: 'idle',
@@ -19,7 +21,7 @@ const GameContext = createContext<GameContextType | undefined>(undefined);
 
 export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [gameState, setGameState] = useState<GameState>(initialGameState);
-  const [timer, setTimer] = useState<number | null>(null);
+  const [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
 
   const startGame = () => {
     const letter = getRandomLetter();

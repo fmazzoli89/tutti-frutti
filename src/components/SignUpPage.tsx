@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './LoginPage.css';
 
@@ -10,7 +10,6 @@ const SignUpPage: React.FC = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
   const { signUp } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -28,8 +27,8 @@ const SignUpPage: React.FC = () => {
         throw new Error('Username must be at least 3 characters long');
       }
 
-      const result = await signUp(email, password, username);
-      setSuccess(result.message);
+      await signUp(email, password, username);
+      setSuccess('Please check your email for confirmation link');
       // Don't navigate away - wait for email confirmation
     } catch (err) {
       console.error('Signup error:', err);
