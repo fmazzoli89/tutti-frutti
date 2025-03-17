@@ -52,7 +52,6 @@ const AppContent: React.FC = () => {
 // Auth callback handler
 const AuthCallback: React.FC = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
   
   useEffect(() => {
     const handleCallback = async () => {
