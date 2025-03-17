@@ -52,7 +52,7 @@ class AuthService {
       console.error('Email confirmation handling error:', error);
       throw error;
     }
-  },
+  }
 
   async signIn(email: string, password: string) {
     const { data, error } = await supabase.auth.signInWithPassword({
@@ -62,12 +62,12 @@ class AuthService {
 
     if (error) throw error;
     return data;
-  },
+  }
 
   async signOut() {
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
-  },
+  }
 
   async getCurrentUser(): Promise<User | null> {
     const { data: { user } } = await supabase.auth.getUser();
@@ -82,7 +82,7 @@ class AuthService {
 
     if (error) throw error;
     return data;
-  },
+  }
 
   async updateProfile(updates: Partial<User>) {
     const { data: { user } } = await supabase.auth.getUser();
@@ -95,7 +95,7 @@ class AuthService {
       .eq('id', user.id);
 
     if (error) throw error;
-  },
+  }
 
   async signInWithGoogle() {
     const { data, error } = await supabase.auth.signInWithOAuth({
@@ -107,7 +107,7 @@ class AuthService {
 
     if (error) throw error;
     return data;
-  },
+  }
 
   async handleCallback() {
     // Get the user
@@ -137,7 +137,7 @@ class AuthService {
       console.error('Error handling callback:', error);
       throw error;
     }
-  },
+  }
 }
 
 export const authService = new AuthService(); 
