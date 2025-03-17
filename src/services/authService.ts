@@ -122,18 +122,10 @@ export const authService = {
   },
 
   async signInWithGoogle() {
-    const redirectTo = typeof window !== 'undefined' 
-      ? `${window.location.origin}/auth/callback`
-      : process.env.VITE_AUTH_REDIRECT_URL;
-
-    if (!redirectTo) {
-      throw new Error('No redirect URL available');
-    }
-
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo,
+        redirectTo: `${window.location.origin}/auth/callback`,
         queryParams: {
           access_type: 'offline',
           prompt: 'consent'

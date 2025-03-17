@@ -30,30 +30,43 @@ const AppContent: React.FC = () => {
   }
 
   return (
-    <Router>
-      <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignUpPage />} />
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <GameProvider>
-                <GameScreen />
-              </GameProvider>
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
-    </Router>
+    <Routes>
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/signup" element={<SignUpPage />} />
+      <Route
+        path="/"
+        element={
+          <ProtectedRoute>
+            <GameProvider>
+              <GameScreen />
+            </GameProvider>
+          </ProtectedRoute>
+        }
+      />
+      <Route path="/auth/callback" element={<AuthCallback />} />
+    </Routes>
   );
+};
+
+// Auth callback handler
+const AuthCallback: React.FC = () => {
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    // After auth callback, redirect to home
+    navigate('/');
+  }, [navigate]);
+
+  return <div>Loading...</div>;
 };
 
 function App() {
   return (
-    <AuthProvider>
-      <AppContent />
-    </AuthProvider>
+    <Router>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </Router>
   );
 }
 
