@@ -139,10 +139,6 @@ export const authService = {
   },
 
   async handleCallback() {
-    // Get the current session
-    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-    if (sessionError) throw sessionError;
-
     // Get the user
     const { data: { user }, error: userError } = await supabase.auth.getUser();
     if (userError) throw userError;
